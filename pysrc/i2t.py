@@ -85,11 +85,11 @@ class _img(object):
             return
 
         if isinstance(img, py23.basestring):
-            self._img = self._impl.image(img)
+            self._img = m._impl.image(img)
             return
 
         self._file_str = np_2_file(img)
-        self._img = self._impl.image(self._file_str)
+        self._img = m._impl.image(self._file_str)
 
     @property
     def img(self):
