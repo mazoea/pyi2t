@@ -70,7 +70,7 @@ def singleton(cls):
 
 class _img(object):
     """
-        Clean upt after use.
+        Clean up after use.
     """
 
     def __init__(self, img):
@@ -85,11 +85,11 @@ class _img(object):
             return
 
         if isinstance(img, py23.basestring):
-            self._img = self._impl.image(file_str)
+            self._img = self._impl.image(img)
             return
 
-        self._file_str = np_2_file(self._file_str)
-        self._img = self._impl.image(file_str)
+        self._file_str = np_2_file(img)
+        self._img = self._impl.image(self._file_str)
 
     @property
     def img(self):
@@ -119,11 +119,13 @@ class _i2t(object):
         """ Default ctor. """
         self._impl = None
         self._deps = []
+        self._dirs = None
         if os.path.exists(os.path.join(_this_dir, 'bins')):
             dirs = dir_spec(_this_dir)
             self.init(dirs)
 
     def init(self, dirs):
+        self._dirs = dirs
         real_module_dir_str = os.path.abspath(dirs.bins)
         if real_module_dir_str not in sys.path:
             sys.path.append(real_module_dir_str)
@@ -181,7 +183,7 @@ class _i2t(object):
 
         :return: True/False, str, bbox/None
         """
-        ibf = self._impl.ml_ib_form(page, _configs_dir)
+        ibf = self._impl.ml_ib_form(page, self._dirs.configs)
         doc_tp = ibf.type()
         is_ib = doc_tp.is_ib()
         type_str = doc_tp.str()
@@ -190,18 +192,15 @@ class _i2t(object):
 
     # =============
 
-    def load_doc(self, js_str_or_obj):
+    def load_doc(self, js_str):
         """
             Load document representation from a json string.
         :param js_str:
         :return:
         """
-        if not isinstance(js_str_or_obj, py23.basestring):
-            js_str_or_obj = pyi2t.js2str(js_str_or_obj)
-
         env = self._impl.env()
         doc = self._impl.document(env)
-        doc.from_str(js_str_or_obj)
+        doc.from_str(js_str)
         return doc
 
     # =============
@@ -224,7 +223,7 @@ class _i2t(object):
         :param tmpl_path:
         :return:
         """
-        tmpl_path = os.path.join(_configs_dir, 'ib-template.json')
+        tmpl_path = os.path.join(self._dirs.configs, 'ib-template.json')
         return self._impl.ib_report(doc, cols, grid, tmpl_path)
 
     def create_image_from_png(self, image_date_base64_png):
