@@ -1,0 +1,22 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+    - id: check-json
+    - id: mixed-line-ending
+      args: ['--fix=lf']
+      description: Forces to replace line ending by the UNIX 'lf' character.
+    - id: check-added-large-files
+      args: ['--maxkb=5000']
+-   repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.5.1
+    hooks:
+    -   id: autopep8
+-   repo: https://github.com/doublify/pre-commit-clang-format
+    rev: f4c4ac5948aff384af2b439bfabb2bdd65d2b3ac
+    hooks:
+    # for windows remove /c//Users//jm//AppData//Roaming//npm//clang-format and keep only *.cmd there!
+    -   id: clang-format
+        args:
+        - --fallback-style=none
+        - --style=file
