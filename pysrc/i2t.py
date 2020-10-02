@@ -251,8 +251,8 @@ class _i2t(object):
     def _ocr_line_from_file(self, img, engine, binarize):
         if binarize == 'otsu':
             img.binarize_otsu()
-        s, arr = self._impl.ocr_line(engine, img)
-        return s, arr
+        s, words_arr = self._impl.ocr_line(engine, img)
+        return s, words_arr
 
 
 m = _i2t()
