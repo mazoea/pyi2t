@@ -42,16 +42,7 @@ namespace maz {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
                 std::string s = maz::ocr::ocr_line(engine, runstats, words, img);
-                std::list<maz::doc::base_element> arr;
-                // texts;
-                std::list<std::string> confs;
-                std::list<std::string> bboxes;
-                for (auto pw : words)
-                {
-                    if (!pw) continue;
-                    arr.push_back(*pw);
-                }
-                return make_tuple(s, arr);
+                return make_tuple(s, words);
             },
             "OCR line image");
     }

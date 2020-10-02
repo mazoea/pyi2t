@@ -5,6 +5,7 @@
 #include "image-analysis/image.h"
 #include "io-document/io-document.h"
 #include "io-document/types.h"
+#include "io-document/word.h"
 #include "layout-analysis/layout/columns.h"
 #include "os/version.h"
 #include "serialize/serialize.h"
@@ -62,6 +63,8 @@ namespace maz {
         ;
 
         // ============
+        py::class_<maz::doc::word_type, maz::doc::base_element, std::shared_ptr<maz::doc::word_type>>(m, "word")
+        ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
         ;
