@@ -29,12 +29,6 @@ namespace maz {
             .def("to_json_str", &serial::i_to_json_dict::to_json_str);
 
 
-        // ============
-
-        py::class_<maz::doc::base_element>(m, "doc_base_element")
-            .def_readwrite("bbox", &maz::doc::base_element::bbox)
-            .def_readwrite("text", &maz::doc::base_element::text)
-            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_));
 
         // ============
     
@@ -63,7 +57,10 @@ namespace maz {
         ;
 
         // ============
-        py::class_<maz::doc::word_type, maz::doc::base_element, std::shared_ptr<maz::doc::word_type>>(m, "word")
+        py::class_<maz::doc::word_type, std::shared_ptr<maz::doc::word_type>>(m, "word")
+            .def_readwrite("bbox", &maz::doc::base_element::bbox)
+            .def_readwrite("text", &maz::doc::base_element::text)
+            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_));
         ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
