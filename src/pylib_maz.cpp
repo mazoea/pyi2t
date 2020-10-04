@@ -57,10 +57,20 @@ namespace maz {
         ;
 
         // ============
+
+        py::class_<maz::doc::word_detail_type>(m, "word_detail_type")
+            .def(py::init<>())
+            .def_readwrite("from_dict", &maz::doc::word_detail_type::from_dict)
+            .def_readwrite("baseline", &maz::doc::word_detail_type::baseline)
+            .def_readwrite("warnings", &maz::doc::word_detail_type::warnings)
+        ;
+
         py::class_<maz::doc::word_type, std::shared_ptr<maz::doc::word_type>>(m, "word")
             .def_readwrite("bbox", &maz::doc::base_element::bbox)
             .def_readwrite("text", &maz::doc::base_element::text)
-            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_));
+            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
+            .def_readwrite("detail", &maz::doc::word_type::detail)
+
         ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
