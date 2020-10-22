@@ -133,7 +133,9 @@ namespace maz {
             .def("downscale2x", &maz::ia::image::downscale2x)
             .def("upscale2x", &maz::ia::image::upscale2x)
             .def("enhance", &maz::ia::image::enhance)
-            .def("bbox", &maz::ia::image::bbox);
+            .def("bbox", &maz::ia::image::bbox)
+            .def("base64_encode", &maz::ia::image::base64_encode)
+            ;
 
         // ============
         py::class_<maz::la::cell_type, std::shared_ptr<maz::la::cell_type>>(m, "la_cell")
