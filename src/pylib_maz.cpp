@@ -2,6 +2,7 @@
 
 // ================
 
+#include "format/format.h"
 #include "image-analysis/image.h"
 #include "io-document/io-document.h"
 #include "io-document/types.h"
@@ -170,11 +171,16 @@ namespace maz {
 
         py::class_<maz::la::gridline, std::shared_ptr<maz::la::gridline>>(m, "la_gridline")
             .def(py::init<const maz::doc::bboxes_type&, const maz::doc::bboxes_type&, const std::string&>(), py::arg("hlines"), py::arg("vlines"), py::arg("dbg") = "")
-            .def("target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
+            .def("set_target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
+            .def("target_segment", py::overload_cast<>(&maz::la::gridline::target_segment, py::const_))
             .def("hlines", &maz::la::gridline::hlines)
             .def("vlines", &maz::la::gridline::vlines)
-            .def("clear_lines", &maz::la::gridline::clear_lines)
             .def("set_vlines", &maz::la::gridline::set_vlines)
+            .def("clear_lines", &maz::la::gridline::clear_lines)
+            .def("__repr__", [](maz::la::gridline& self) -> std::string {
+                    return fmt::format("ts:{} hlines:{} vlines:{}", 
+                        self.target_segment().to_string(), self.hlines().size(), self.vlines().size());
+            })
         ;
 
     }
