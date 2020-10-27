@@ -125,6 +125,7 @@ class _i2t(object):
             self.init(dirs)
 
     def init(self, dirs):
+        _logger.info('OCR models loading')
         self._dirs = dirs
         real_module_dir_str = os.path.abspath(dirs.bins)
         if real_module_dir_str not in sys.path:
@@ -160,6 +161,7 @@ class _i2t(object):
         self.t3.init(dirs.lang, 'maz', env3)
         self.t4 = oem.reocr()
         self.t4.init(dirs.lang, 'maz-lstm', env4)
+        _logger.info('OCR models loaded')
 
     # =============
 
