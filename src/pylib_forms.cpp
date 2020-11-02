@@ -100,7 +100,10 @@ namespace maz {
             .def("types", &maz::forms::ib::report::types)
             .def("bboxes", &maz::forms::ib::report::bboxes)
             .def("size", &maz::forms::ib::report::size)
-            .def("items", &maz::forms::ib::report::items);
+            .def("items", &maz::forms::ib::report::items)
+            .def("segment_mode", &maz::forms::ib::report::segment_mode)
+            .def("set_text_debug", &maz::forms::ib::report::set_text_debug)
+            ;
 
         // ============ 
 

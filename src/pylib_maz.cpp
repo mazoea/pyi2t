@@ -2,9 +2,11 @@
 
 // ================
 
+#include "format/format.h"
 #include "image-analysis/image.h"
 #include "io-document/io-document.h"
 #include "io-document/types.h"
+#include "io-document/word.h"
 #include "layout-analysis/layout/columns.h"
 #include "os/version.h"
 #include "serialize/serialize.h"
@@ -28,12 +30,6 @@ namespace maz {
             .def("to_json_str", &serial::i_to_json_dict::to_json_str);
 
 
-        // ============
-
-        py::class_<maz::doc::base_element>(m, "doc_base_element")
-            .def_readwrite("bbox", &maz::doc::base_element::bbox)
-            .def_readwrite("text", &maz::doc::base_element::text)
-            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_));
 
         // ============
     
@@ -62,6 +58,21 @@ namespace maz {
         ;
 
         // ============
+
+        py::class_<maz::doc::word_detail_type>(m, "word_detail_type")
+            .def(py::init<>())
+            .def_readwrite("from_dict", &maz::doc::word_detail_type::from_dict)
+            .def_readwrite("baseline", &maz::doc::word_detail_type::baseline)
+            .def_readwrite("warnings", &maz::doc::word_detail_type::warnings)
+        ;
+
+        py::class_<maz::doc::word_type, std::shared_ptr<maz::doc::word_type>>(m, "word")
+            .def_readwrite("bbox", &maz::doc::base_element::bbox)
+            .def_readwrite("text", &maz::doc::base_element::text)
+            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
+            .def_readwrite("detail", &maz::doc::word_type::detail)
+
+        ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
         ;
@@ -123,7 +134,9 @@ namespace maz {
             .def("downscale2x", &maz::ia::image::downscale2x)
             .def("upscale2x", &maz::ia::image::upscale2x)
             .def("enhance", &maz::ia::image::enhance)
-            .def("bbox", &maz::ia::image::bbox);
+            .def("bbox", &maz::ia::image::bbox)
+            .def("base64_encode", &maz::ia::image::base64_encode)
+            ;
 
         // ============
         py::class_<maz::la::cell_type, std::shared_ptr<maz::la::cell_type>>(m, "la_cell")
@@ -158,11 +171,16 @@ namespace maz {
 
         py::class_<maz::la::gridline, std::shared_ptr<maz::la::gridline>>(m, "la_gridline")
             .def(py::init<const maz::doc::bboxes_type&, const maz::doc::bboxes_type&, const std::string&>(), py::arg("hlines"), py::arg("vlines"), py::arg("dbg") = "")
-            .def("target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
+            .def("set_target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
+            .def("target_segment", py::overload_cast<>(&maz::la::gridline::target_segment, py::const_))
             .def("hlines", &maz::la::gridline::hlines)
             .def("vlines", &maz::la::gridline::vlines)
-            .def("clear_lines", &maz::la::gridline::clear_lines)
             .def("set_vlines", &maz::la::gridline::set_vlines)
+            .def("clear_lines", &maz::la::gridline::clear_lines)
+            .def("__repr__", [](maz::la::gridline& self) -> std::string {
+                    return fmt::format("ts:{} hlines:{} vlines:{}", 
+                        self.target_segment().to_string(), self.hlines().size(), self.vlines().size());
+            })
         ;
 
     }
