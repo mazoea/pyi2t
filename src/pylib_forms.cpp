@@ -82,7 +82,11 @@ namespace maz {
         py::class_<maz::forms::ib::line>(m, "ib_line")
             .def("valid", &maz::forms::ib::line::valid)
             .def("bbox", py::overload_cast<>(&maz::forms::ib::line::bbox, py::const_))
-            .def("str", &maz::forms::ib::line::str);
+            .def("str", &maz::forms::ib::line::str)
+            .def("json_str", [](maz::forms::ib::line& l) ->std::string {
+                return l.to_json(serial::full).dump(2);
+            })
+        ;
 
         py::class_<maz::forms::ib::report>(m, "ib_report")
             .def(py::init([](maz::doc::document& doc,
