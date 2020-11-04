@@ -14,7 +14,6 @@ _logger = logging.getLogger("i2t")
 _this_dir = os.path.dirname(os.path.abspath(__file__))
 
 PY2 = (2 == sys.version_info[0])
-PY3 = (3 == sys.version_info[0])
 
 if PY2:
     class py23(object):
@@ -131,17 +130,25 @@ class _i2t(object):
         if real_module_dir_str not in sys.path:
             sys.path.append(real_module_dir_str)
 
+        import locale
+        locale.setlocale(locale.LC_ALL, 'C')
+
         if os_windows():
             import pyi2t
             self._impl = pyi2t
         else:
             # load dependencies explicitly otherwise LD_LIBRARY_DIR would have to be
             # used
+            # IF you encounter with PyCHARM an `invalid free()` or similar, disable
+            # `File > Settings > Tools >  Python > show plots in tool window`
             for lib in self.so_libs:
                 abs_lib = os.path.join(real_module_dir_str, lib)
                 loaded_lib = ctypes.cdll.LoadLibrary(abs_lib)
                 self._deps.append(loaded_lib)
-            self._impl = importlib.import_module('pyi2t2')
+            if PY2:
+                self._impl = importlib.import_module('pyi2t2')
+            else:
+                self._impl = importlib.import_module('pyi2t3')
 
         oem = self._impl.ocr_engine_manager('tesseract3', 'tesseract4')
         conf = os.path.join(dirs.configs, 'maz.v5.json')
@@ -207,7 +214,7 @@ class _i2t(object):
 
     # =============
 
-    def create_gridline(self, page, hlines=None, vlines=None):
+    def create_grid_info(self, page, hlines=None, vlines=None):
         """
             Create gridline object using hlines/vlines information on a page.
         :return:
@@ -233,6 +240,9 @@ class _i2t(object):
 
     def create_image(self, file_str):
         return self._impl.image(file_str)
+
+    def create_bbox(self, xlt, ylt, xrb, yrb):
+        return self._impl.bbox_type(xlt, ylt, xrb, yrb)
 
     # =============
 
