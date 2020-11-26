@@ -9,6 +9,8 @@ import importlib
 import sys
 import ctypes
 import tempfile
+import time
+import base64
 # =================
 _logger = logging.getLogger("i2t")
 _this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +23,47 @@ if PY2:
 else:
     class py23(object):
         basestring = str
+
+
+class perf_probe(object):
+    """
+        Performance probe logging time it took.
+    """
+
+    ENABLED = False
+
+    def __init__(self, msg, min_t=0.01):
+        if self.disabled():
+            return
+        self.msg = msg
+        self.s = None
+        self.min_t = min_t
+
+    def disabled(self):
+        return not perf_probe.ENABLED
+
+    def __enter__(self):
+        if self.disabled():
+            return
+        self.s = time.time()
+        return self
+
+    def __exit__(self, *args):
+        if self.disabled():
+            return
+        took = time.time() - self.s
+        if took < self.min_t:
+            return
+        _logger.debug('[%10s] took [%8.4fs]', self.msg, took)
+
+
+def perf_func(min_t=0.2):
+    def wrap(func):
+        def _enclose(*args, **kw):
+            with perf_probe(func.__name__, min_t):
+                return func(*args, **kw)
+        return _enclose
+    return wrap
 
 
 # =================
@@ -42,6 +85,12 @@ def np_2_file(np_img):
     tf.close()
     cv2.imwrite(tf.name, np_img)
     return tf.name
+
+
+def np_to_png_base64(np_img):
+    import cv2
+    img_str = cv2.imencode('.png', np_img)[1].tostring()
+    return base64.standard_b64encode(img_str).decode("ascii")
 
 
 def os_windows():
@@ -87,8 +136,13 @@ class _img(object):
             self._img = m._impl.image(img)
             return
 
+        # faster than `np_to_png_base64`
         self._file_str = np_2_file(img)
         self._img = m._impl.image(self._file_str)
+
+        # slower
+        # base64_buf = np_to_png_base64(img)
+        # self._img = m._impl.image(base64_buf, 'image/png')
 
     @property
     def img(self):
@@ -177,12 +231,17 @@ class _i2t(object):
 
     # =============
 
+    @perf_func
+    def image_wrapper(self, file_str_or_np_img_or_pyimg):
+        return _img(file_str_or_np_img_or_pyimg)
+
+    @perf_func
     def ocr_line_v3(self, file_str_or_np_img_or_pyimg, binarize=None):
-        args = _img(file_str_or_np_img_or_pyimg)
+        args = self.image_wrapper(file_str_or_np_img_or_pyimg)
         return self._ocr_line_from_file(args.img, self.t3, binarize=binarize)
 
     def ocr_line_v4(self, file_str_or_np_img_or_pyimg, binarize=None):
-        args = _img(file_str_or_np_img_or_pyimg)
+        args = self.image_wrapper(file_str_or_np_img_or_pyimg)
         return self._ocr_line_from_file(args.img, self.t4, binarize=binarize)
 
     # =============
@@ -261,9 +320,11 @@ class _i2t(object):
     # =============
 
     def _ocr_line_from_file(self, img, engine, binarize):
-        if binarize == 'otsu':
-            img.binarize_otsu()
-        s, words_arr = self._impl.ocr_line(engine, img)
+        with perf_probe('binarize'):
+            if binarize == 'otsu':
+                img.binarize_otsu()
+        with perf_probe('ocr_line'):
+            s, words_arr = self._impl.ocr_line(engine, img)
         return s, words_arr
 
 
