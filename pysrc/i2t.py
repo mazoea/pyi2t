@@ -32,36 +32,43 @@ class perf_probe(object):
 
     ENABLED = False
 
-    def __init__(self, msg, min_t=0.01):
-        if self.disabled():
+    def __init__(self, msg, min_t=0.01, enabled=ENABLED, raw_print=False):
+        self._enabled = enabled
+        if self.disabled:
             return
         self.msg = msg
         self.s = None
         self.min_t = min_t
+        self.raw_print = raw_print
 
+    @property
     def disabled(self):
-        return not perf_probe.ENABLED
+        return not self._enabled
 
     def __enter__(self):
-        if self.disabled():
+        if self.disabled:
             return
         self.s = time.time()
         return self
 
     def __exit__(self, *args):
-        if self.disabled():
+        if self.disabled:
             return
         took = time.time() - self.s
         if took < self.min_t:
             return
-        _logger.debug('[%10s] took [%8.4fs]', self.msg, took)
+        msg = '[%10s] took [%8.4fs]' % (self.msg, took)
+        if self.raw_print:
+            print(msg)
+        else:
+            _logger.debug(msg)
 
 
-def perf_func(min_t=0.2):
+def perf_method(min_t=0.2):
     def wrap(func):
-        def _enclose(*args, **kw):
+        def _enclose(self, *args, **kw):
             with perf_probe(func.__name__, min_t):
-                return func(*args, **kw)
+                return func(self, *args, **kw)
         return _enclose
     return wrap
 
@@ -231,11 +238,11 @@ class _i2t(object):
 
     # =============
 
-    @perf_func
+    @perf_method()
     def image_wrapper(self, file_str_or_np_img_or_pyimg):
         return _img(file_str_or_np_img_or_pyimg)
 
-    @perf_func
+    @perf_method()
     def ocr_line_v3(self, file_str_or_np_img_or_pyimg, binarize=None):
         args = self.image_wrapper(file_str_or_np_img_or_pyimg)
         return self._ocr_line_from_file(args.img, self.t3, binarize=binarize)

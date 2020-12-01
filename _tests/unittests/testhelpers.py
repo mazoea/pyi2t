@@ -14,12 +14,12 @@ test_data_dir = os.path.join(main_dir, '_tests/data')
 g_i2t = None
 
 
-def get_i2t():
+def get_i2t(dirs=None):
     global g_i2t
     if g_i2t is not None:
         return g_i2t
     from i2t import m
-    dirs = get_dirs()
+    dirs = dirs or get_dirs()
     g_i2t = m
     g_i2t.init(dirs)
     return g_i2t
