@@ -98,6 +98,8 @@ namespace maz {
             }))
             .def("find_columns", &maz::forms::ib::report::find_columns)
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
+            .def("check_simple_parsing", &maz::forms::ib::report::check_simple_parsing)
+            .def("extend_grid", &maz::forms::ib::report::extend_grid)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
             .def("parse", &maz::forms::ib::report::parse)
@@ -106,6 +108,12 @@ namespace maz {
             .def("size", &maz::forms::ib::report::size)
             .def("items", &maz::forms::ib::report::items)
             .def("set_text_debug", &maz::forms::ib::report::set_text_debug)
+            ;
+
+        py::class_<maz::forms::ib::parsing_type>(
+            m, "ib_parsing_type")
+            .def(py::init<>())
+            .def("value", &maz::forms::ib::parsing_type::value)
             ;
 
         // ============ 
@@ -123,6 +131,20 @@ namespace maz {
                 return pcols_;
             },
             "Create columns representation",
+            py::return_value_policy::copy);
+
+        m.def(
+            "init_columns",
+            [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> {
+                auto& stats = page.statistics(true);
+                int h_line = maz::to_int(stats.means.h_line);
+                int h_word = maz::to_int(stats.means.h_word);
+                maz::la::ptr_columns pcols_ =
+                    std::shared_ptr<maz::la::columns>(new maz::la::columns(
+                        maz::forms::ib::columns_from_text::min_cols, page.lines()));
+                return pcols_;
+            },
+            "Initialize columns for further processing, should be filled subsequently",
             py::return_value_policy::copy);
 
     }
