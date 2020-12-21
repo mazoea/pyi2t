@@ -8,6 +8,7 @@
 #include "io-document/types.h"
 #include "io-document/word.h"
 #include "layout-analysis/layout/columns.h"
+#include "layout-analysis/layout/gridrows.h"
 #include "os/version.h"
 #include "serialize/serialize.h"
 
@@ -170,7 +171,7 @@ namespace maz {
         // ============
 
         py::class_<maz::la::gridline, std::shared_ptr<maz::la::gridline>>(m, "la_gridline")
-            .def(py::init<const maz::doc::bboxes_type&, const maz::doc::bboxes_type&, const std::string&>(), py::arg("hlines"), py::arg("vlines"), py::arg("dbg") = "")
+            .def(py::init<const maz::doc::bboxes_type&, const maz::doc::bboxes_type&>(), py::arg("hlines"), py::arg("vlines"))
             .def("set_target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
             .def("target_segment", py::overload_cast<>(&maz::la::gridline::target_segment, py::const_))
             .def("hlines", &maz::la::gridline::hlines)
@@ -181,6 +182,11 @@ namespace maz {
                     return fmt::format("ts:{} hlines:{} vlines:{}", 
                         self.target_segment().to_string(), self.hlines().size(), self.vlines().size());
             })
+        ;
+
+        py::class_<maz::la::grid_rows, std::shared_ptr<maz::la::grid_rows>>(m, "la_gridrows")
+            .def(py::init<const std::list<doc::bboxes_type>&>(), py::arg("rows_cells_bboxes"))
+            .def("init", py::overload_cast<doc::document&, la::ptr_columns, la::ptr_gridline>(&maz::la::grid_rows::init), py::arg("doc"), py::arg("pcols"), py::arg("gridline"))
         ;
 
     }
