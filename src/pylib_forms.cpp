@@ -109,12 +109,6 @@ namespace maz {
             .def("set_text_debug", &maz::forms::ib::report::set_text_debug)
             ;
 
-        py::class_<maz::forms::ib::parsing_type>(
-            m, "ib_parsing_type")
-            .def(py::init<>())
-            .def("value", &maz::forms::ib::parsing_type::value)
-            ;
-
         // ============ 
 
         m.def(
