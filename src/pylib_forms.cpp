@@ -97,7 +97,7 @@ namespace maz {
                 return maz::forms::ib::report(doc, pcols, pgrid, ptpl, {});
             }))
             .def("find_columns", &maz::forms::ib::report::find_columns)
-            .def("handle_corner_case", &maz::forms::ib::report::segment_handle_corner_case)
+            .def("segment_handle_corner_case", &maz::forms::ib::report::segment_handle_corner_case)
             .def("extend_grid", &maz::forms::ib::report::segment_extend_grid)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)

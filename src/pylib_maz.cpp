@@ -188,6 +188,7 @@ namespace maz {
 
         py::class_<maz::la::grid_rows, std::shared_ptr<maz::la::grid_rows>>(m, "la_gridrows")
             .def(py::init<const std::list<doc::bboxes_type>&>(), py::arg("rows_cells_bboxes"))
+            .def("to_json", &maz::la::grid_rows::to_json)
             .def("init", py::overload_cast<doc::document&, la::ptr_columns, la::ptr_gridline>(&maz::la::grid_rows::init), py::arg("doc"), py::arg("pcols"), py::arg("gridline"))
         ;
 
