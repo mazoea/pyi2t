@@ -79,13 +79,10 @@ namespace maz {
 
         // ============ 
     
-        py::class_<maz::forms::ib::line>(m, "ib_line")
+        py::class_<maz::forms::ib::line, serial::i_to_json_dict>(m, "ib_line")
             .def("valid", &maz::forms::ib::line::valid)
             .def("bbox", py::overload_cast<>(&maz::forms::ib::line::bbox, py::const_))
             .def("str", &maz::forms::ib::line::str)
-            .def("json_str", [](maz::forms::ib::line& l) ->std::string {
-                return l.to_json(serial::full).dump(2);
-            })
         ;
 
         py::class_<maz::forms::ib::report>(m, "ib_report")
@@ -129,9 +126,6 @@ namespace maz {
         m.def(
             "init_columns",
             [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> {
-                auto& stats = page.statistics(true);
-                int h_line = maz::to_int(stats.means.h_line);
-                int h_word = maz::to_int(stats.means.h_word);
                 maz::la::ptr_columns pcols_ =
                     std::shared_ptr<maz::la::columns>(new maz::la::columns(
                         maz::forms::ib::columns_from_text::min_cols, page.lines()));

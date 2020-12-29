@@ -28,7 +28,7 @@ namespace maz {
         // ============
 
         py::class_<serial::i_to_json_dict>(m, "i_to_json_dict")
-            .def("to_json_str", &serial::i_to_json_dict::to_json_str);
+            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("indent") = -1);
 
 
 
@@ -186,9 +186,16 @@ namespace maz {
             })
         ;
 
-        py::class_<maz::la::grid_rows, std::shared_ptr<maz::la::grid_rows>>(m, "la_gridrows")
+        /**
+         ```
+import pyi2t as m
+lgr = m.la_gridrows([])
+print(lgr)
+print(lgr.to_json_str())
+         ```
+         */
+        py::class_<maz::la::grid_rows, serial::i_to_json_dict>(m, "la_gridrows")
             .def(py::init<const std::list<doc::bboxes_type>&>(), py::arg("rows_cells_bboxes"))
-            .def("to_json", &maz::la::grid_rows::to_json)
             .def("init", py::overload_cast<doc::document&, la::ptr_columns, la::ptr_gridline>(&maz::la::grid_rows::init), py::arg("doc"), py::arg("pcols"), py::arg("gridline"))
         ;
 
