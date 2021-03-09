@@ -1,6 +1,10 @@
 #include "pylib.h"
 
 // ================
+// both python and leptonica define it
+#ifdef HAVE_FSTATAT
+    #undef HAVE_FSTATAT
+#endif
 
 #include "format/format.h"
 #include "image-analysis/image.h"
