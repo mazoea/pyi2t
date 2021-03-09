@@ -1,6 +1,10 @@
 #include "pylib.h"
 
 // ================
+// both python and leptonica define it
+#ifdef HAVE_FSTATAT
+    #undef HAVE_FSTATAT
+#endif
 
 #include "forms/ib/columns_text.h"
 #include "forms/ib/page_segments_detector.h"
