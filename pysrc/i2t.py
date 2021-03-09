@@ -183,6 +183,8 @@ class _i2t(object):
         if os.path.exists(os.path.join(_this_dir, 'bins')):
             dirs = dir_spec(_this_dir)
             self.init(dirs)
+        self.t3 = None
+        self.t4 = None
 
     def init(self, dirs):
         _logger.info('OCR models loading')
@@ -210,6 +212,9 @@ class _i2t(object):
                 self._impl = importlib.import_module('pyi2t2')
             else:
                 self._impl = importlib.import_module('pyi2t3')
+
+        if os.environ.get('MAZ_EXT_OCR_MODELS', '1') == '0':
+            return
 
         oem = self._impl.ocr_engine_manager('tesseract3', 'tesseract4')
         conf = os.path.join(dirs.configs, 'maz.v5.json')
