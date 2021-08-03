@@ -87,6 +87,10 @@ namespace maz {
             .def("str", [](maz::doc::page_type& page) -> std::string {
                 return doc::str(page);
             })
+            .def("ia_bboxes", [](maz::doc::page_type& page, const std::string& key) -> doc::bboxes_type {
+                if (!page.ia_elems().has(key)) return {};
+                return page.ia_elems().get(key)->bboxes();
+                })
             .def("hlines", [](maz::doc::page_type& page) -> doc::bboxes_type {
                 // get hlines from IA
                 if (!page.ia_elems().has("hlines")) return {};
@@ -95,7 +99,7 @@ namespace maz {
             .def("vlines", [](maz::doc::page_type& page) -> doc::bboxes_type {
                 // get vlines only if table 
                 auto js = page.get_layout("table_vlines");
-                return maz::doc::js2bboxes(js);
+                return maz::doc::json2bboxes(js);
             })
             .def("has_image", [](maz::doc::page_type& page, const std::string& key) -> bool {
                 return page.images().has(key);

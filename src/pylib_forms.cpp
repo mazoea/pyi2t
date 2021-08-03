@@ -89,6 +89,16 @@ namespace maz {
             .def("str", &maz::forms::ib::line::str)
         ;
 
+        py::class_<maz::forms::ib::lines>(m, "lines")
+            .def("__len__", &maz::forms::ib::lines::size)
+            .def("__getitem__", [](const maz::forms::ib::lines& ib_lines, size_t i) ->maz::forms::ib::line {
+            if (i >= ib_lines.size()) throw py::index_error();
+                return *std::next(ib_lines.begin(), i);
+            }, py::return_value_policy::reference_internal)
+            .def("all_size", &maz::forms::ib::lines::all_size)
+            .def("ignored_size", &maz::forms::ib::lines::ignored_size)
+        ;
+
         py::class_<maz::forms::ib::report>(m, "ib_report")
             .def(py::init([](maz::doc::document& doc,
                              maz::la::ptr_columns pcols,
