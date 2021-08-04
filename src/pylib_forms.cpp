@@ -118,7 +118,7 @@ namespace maz {
             .def("size", &maz::forms::ib::report::size)
             .def("items", &maz::forms::ib::report::items)
             .def("set_text_debug", &maz::forms::ib::report::set_text_debug)
-            ;
+        ;
 
         // ============ 
 
@@ -146,6 +146,13 @@ namespace maz {
                 return pcols_;
             },
             "Initialize columns for further processing, should be filled subsequently",
+            py::return_value_policy::copy);
+
+        m.def("rough_ib_lines", 
+            [](const maz::doc::lines_type& lines) {
+                return forms::ib::rough_ib_lines(lines);
+            },
+            "Returns lines that are IB like.",
             py::return_value_policy::copy);
 
     }

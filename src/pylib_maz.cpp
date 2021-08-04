@@ -76,10 +76,18 @@ namespace maz {
             .def_readwrite("text", &maz::doc::base_element::text)
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
             .def_readwrite("detail", &maz::doc::word_type::detail)
-
         ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
+            .def_readwrite("bbox", &maz::doc::base_element::bbox)
+            .def_readwrite("text", &maz::doc::base_element::text)
+            .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
+            .def("words", &maz::doc::line_type::words)
+            .def("__len__", &maz::doc::line_type::size)
+            .def("__getitem__", [](maz::doc::line_type& self, size_t i) -> maz::doc::ptr_word {
+                if (i >= self.size()) throw py::index_error();
+                return *std::next(self.begin(), i);
+            }, py::return_value_policy::reference_internal)
         ;
 
         py::class_<maz::doc::page_type, maz::doc::source_transformation>(m, "page")
