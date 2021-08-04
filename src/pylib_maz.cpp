@@ -87,6 +87,9 @@ namespace maz {
             .def("str", [](maz::doc::page_type& page) -> std::string {
                 return doc::str(page);
             })
+            .def("ia_keys", [](maz::doc::page_type& page) -> std::list<std::string> {
+                return page.ia_elems().keys();
+            })
             .def("ia_bboxes", [](maz::doc::page_type& page, const std::string& key) -> doc::bboxes_type {
                 if (!page.ia_elems().has(key)) return {};
                 return page.ia_elems().get(key)->bboxes();
