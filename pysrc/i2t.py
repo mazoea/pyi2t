@@ -270,6 +270,13 @@ class _i2t(object):
         ib_bbox = ibf.get_ib_section() if is_ib else None
         return is_ib, type_str, ib_bbox
 
+    def ml_ib_form_prepare(self, doc):
+        """
+        :param js_str:
+        :return:
+        """
+        self._impl.ml_ib_form_prepare(doc)
+
     # =============
 
     def load_doc(self, js_str):
