@@ -43,6 +43,13 @@ namespace maz {
             .def("size", &maz::forms::ib::page_segments_detector::size)
             .def("segments", &maz::forms::ib::page_segments_detector::segments);
 
+        m.def(
+            "ml_ib_form_prepare",
+            [](maz::doc::document& doc) {
+                maz::ml::classify::ib_form::reformat(doc);
+            },
+            "Prepare document for feature extraction");
+
         // ============
 
         py::class_<maz::forms::ib::col_feats>(m, "ib_col_feats")
