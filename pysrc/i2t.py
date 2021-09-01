@@ -301,6 +301,14 @@ class _i2t(object):
         vlines = page.vlines() if vlines is None else vlines
         return self._impl.la_gridline(hlines, vlines)
 
+    def create_grid_rows(self, gridcells):
+        """
+            Create grid rows using GridFinder
+        :param gridcells:
+        :return:
+        """
+        return self._impl.la_gridrows(gridcells)
+
     def create_report(self, doc, cols, grid):
         """
             Create IB report object
@@ -324,8 +332,20 @@ class _i2t(object):
 
     # =============
 
+    def extend_grid(self):
+        return self._impl.extend_grid()
+
+    def load_columns_from_grid(self, doc, grid_info, grid):
+        return self._impl.load_columns_from_grid(doc, grid_info, grid)
+
     def detect_columns(self, doc, imgb):
         return self._impl.detect_columns(doc, imgb)
+
+    def init_columns(self, doc):
+        return self._impl.init_columns(doc)
+
+    def rough_ib_lines(self, lines):
+        return self._impl.rough_ib_lines(lines)
 
     def get_segments(self, page):
         """
