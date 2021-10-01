@@ -106,16 +106,8 @@ namespace maz {
         ;
 
         py::class_<maz::forms::ib::report>(m, "ib_report")
-            .def(py::init([](maz::doc::document& doc,
-                             maz::la::ptr_columns pcols,
-                             maz::la::ptr_gridline pgrid,
-                             const std::string& template_path) {
-                auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
-                return maz::forms::ib::report(doc, pcols, pgrid, ptpl, {});
-            }))
             .def("find_columns", &maz::forms::ib::report::find_columns)
-            .def("segment_handle_corner_case", &maz::forms::ib::report::segment_handle_corner_case)
-            .def("extend_grid", &maz::forms::ib::report::segment_extend_grid)
+            .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
             .def("parse", &maz::forms::ib::report::parse)
@@ -129,29 +121,45 @@ namespace maz {
         // ============ 
 
         m.def(
-            "detect_columns",
-            [](maz::doc::page_type& page, maz::ia::image& imgb) -> std::shared_ptr<maz::la::columns> {
-                auto& stats = page.statistics(true);
-                int h_line = maz::to_int(stats.means.h_line);
-                int h_word = maz::to_int(stats.means.h_word);
-                maz::la::ptr_columns pcols_ =
-                    std::shared_ptr<maz::la::columns>(new maz::la::columns(
-                        maz::forms::ib::columns_from_text::min_cols, page.lines()));
-                pcols_->detect(imgb, pcols_->get_h_param(h_line, h_word));
-                return pcols_;
+            "create_report",
+            [](maz::doc::document& doc,
+                maz::la::ptr_columns pcols,
+                maz::la::ptr_gridline pgrid,
+                const std::string& template_path) -> std::shared_ptr<maz::forms::ib::report> {
+                
+                    auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
+                    // create the report
+                    forms::ib::ptr_report preport = maz::forms::ib::report::create(
+                        doc, pcols, pgrid, ptpl, {}
+                    );
+                    return preport;
             },
-            "Create columns representation",
-            py::return_value_policy::copy);
+            "Initialize report",
+                py::return_value_policy::copy);
+
+        m.def(
+            "create_columns",
+            [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> {
+                return maz::la::columns::create(
+                    maz::forms::ib::columns_from_text::min_cols, page
+                );
+            },
+            "Initialize columns for further processing, should be filled subsequently",
+                py::return_value_policy::copy);
 
         m.def(
             "init_columns",
-            [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> {
-                maz::la::ptr_columns pcols_ =
-                    std::shared_ptr<maz::la::columns>(new maz::la::columns(
-                        maz::forms::ib::columns_from_text::min_cols, page.lines()));
-                return pcols_;
+            [](const doc::page_type& page, maz::la::columns& cols, maz::la::gridline& gridline, const maz::forms::ib::report::raw_grid_cells& grid_cells) -> void {
+                maz::forms::ib::report::init_columns(page, cols, gridline, grid_cells);
             },
-            "Initialize columns for further processing, should be filled subsequently",
+            "Initialize columns from gridline");
+
+        m.def(
+            "detect_columns",
+            [](maz::doc::page_type& page, maz::ia::image& imgb) -> std::shared_ptr<maz::la::columns> {
+                return maz::forms::ib::report::detect_columns(imgb, page);
+            },
+            "Detect columns representation on an image",
             py::return_value_policy::copy);
 
         m.def("rough_ib_lines", 

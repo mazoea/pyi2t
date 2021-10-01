@@ -12,7 +12,6 @@
 #include "io-document/types.h"
 #include "io-document/word.h"
 #include "layout-analysis/layout/columns.h"
-#include "layout-analysis/layout/gridrows.h"
 #include "os/version.h"
 #include "serialize/serialize.h"
 
@@ -203,19 +202,6 @@ namespace maz {
                     return fmt::format("ts:{} hlines:{} vlines:{}", 
                         self.target_segment().to_string(), self.hlines().size(), self.vlines().size());
             })
-        ;
-
-        /**
-         ```
-import pyi2t as m
-lgr = m.la_gridrows([])
-print(lgr)
-print(lgr.to_json_str())
-         ```
-         */
-        py::class_<maz::la::grid_rows, serial::i_to_json_dict>(m, "la_gridrows")
-            .def(py::init<const std::list<doc::bboxes_type>&>(), py::arg("rows_cells_bboxes"))
-            .def("init", py::overload_cast<doc::document&, la::ptr_columns, la::ptr_gridline>(&maz::la::grid_rows::init), py::arg("doc"), py::arg("pcols"), py::arg("gridline"))
         ;
 
     }
