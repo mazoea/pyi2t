@@ -149,15 +149,15 @@ namespace maz {
 
         m.def(
             "init_columns",
-            [](const doc::page_type& page, maz::la::columns& cols, maz::la::gridline& gridline, const maz::forms::ib::report::raw_grid_cells& grid_cells) -> void {
-                maz::forms::ib::report::init_columns(page, cols, gridline, grid_cells);
+            [](const doc::page_type& page, maz::la::columns& cols, maz::la::gridline& gridline) -> void {
+                maz::forms::ib::report::init_columns(page, cols, gridline);
             },
             "Initialize columns from gridline");
 
         m.def(
             "detect_columns",
-            [](maz::doc::page_type& page, maz::ia::image& imgb) -> std::shared_ptr<maz::la::columns> {
-                return maz::forms::ib::report::detect_columns(imgb, page);
+            [](maz::doc::page_type& page, maz::ia::image& imgb, maz::la::ptr_gridline pgrid) -> std::shared_ptr<maz::la::columns> {
+                return maz::forms::ib::report::detect_columns(imgb, page, pgrid);
             },
             "Detect columns representation on an image",
             py::return_value_policy::copy);

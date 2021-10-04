@@ -192,15 +192,20 @@ namespace maz {
 
         py::class_<maz::la::gridline, std::shared_ptr<maz::la::gridline>>(m, "la_gridline")
             .def(py::init<const maz::doc::bboxes_type&, const maz::doc::bboxes_type&>(), py::arg("hlines"), py::arg("vlines"))
-            .def("set_target_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::target_segment))
-            .def("target_segment", py::overload_cast<>(&maz::la::gridline::target_segment, py::const_))
-            .def("hlines", &maz::la::gridline::hlines)
-            .def("vlines", &maz::la::gridline::vlines)
-            .def("set_vlines", &maz::la::gridline::set_vlines)
+            .def("set_segment", py::overload_cast<const maz::doc::bbox_type&>(&maz::la::gridline::segment))
+            .def("segment", py::overload_cast<>(&maz::la::gridline::segment, py::const_))
+
+            .def("set_cells", py::overload_cast<const maz::la::gridline::cells_type&>(&maz::la::gridline::cells))
+
+            .def("set_classes", &maz::la::gridline::classes)
+
+            .def("hlines", py::overload_cast<>(&maz::la::gridline::hlines, py::const_))
+            .def("vlines", py::overload_cast<>(&maz::la::gridline::vlines, py::const_))
+            .def("set_vlines", py::overload_cast<const doc::bboxes_type&>(&maz::la::gridline::vlines))
             .def("clear_lines", &maz::la::gridline::clear_lines)
             .def("__repr__", [](maz::la::gridline& self) -> std::string {
                     return fmt::format("ts:{} hlines:{} vlines:{}", 
-                        self.target_segment().to_string(), self.hlines().size(), self.vlines().size());
+                        self.segment().to_string(), self.hlines().size(), self.vlines().size());
             })
         ;
 
