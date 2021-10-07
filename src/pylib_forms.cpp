@@ -105,7 +105,7 @@ namespace maz {
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
         ;
 
-        py::class_<maz::forms::ib::report>(m, "ib_report")
+        py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>>(m, "ib_report")
             .def("find_columns", &maz::forms::ib::report::find_columns)
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
@@ -129,7 +129,7 @@ namespace maz {
                 
                     auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
                     // create the report
-                    forms::ib::ptr_report preport = maz::forms::ib::report::create(
+                    std::shared_ptr<maz::forms::ib::report> preport = maz::forms::ib::report::create(
                         doc, pcols, pgrid, ptpl, {}
                     );
                     return preport;
@@ -163,7 +163,7 @@ namespace maz {
             py::return_value_policy::copy);
 
         m.def("rough_ib_lines", 
-            [](const maz::doc::lines_type& lines) {
+            [](const maz::doc::lines_type& lines) -> doc::lines_type {
                 return forms::ib::rough_ib_lines(lines);
             },
             "Returns lines that are IB like.",
