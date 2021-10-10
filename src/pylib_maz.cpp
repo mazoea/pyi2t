@@ -3,7 +3,7 @@
 // ================
 // both python and leptonica define it
 #ifdef HAVE_FSTATAT
-    #undef HAVE_FSTATAT
+#undef HAVE_FSTATAT
 #endif
 
 #include "format/format.h"
@@ -97,6 +97,12 @@ namespace maz {
             .def("ia_keys", [](maz::doc::page_type& page) -> std::list<std::string> {
                 return page.ia_elems().keys();
             })
+            .def("info_val", [](maz::doc::page_type& page, const std::string& k) -> std::string {
+                return page.get_info(k).dump();
+            })
+            .def("info_keys", [](maz::doc::page_type& page) -> std::list<std::string> {
+                return page.get_info_keys();
+            })
             .def("ia_bboxes", [](maz::doc::page_type& page, const std::string& key) -> doc::bboxes_type {
                 if (!page.ia_elems().has(key)) return {};
                 return page.ia_elems().get(key)->bboxes();
@@ -118,6 +124,15 @@ namespace maz {
                 return page.image_data(key).get<std::string>();
             })
             .def_readonly("bbox", &maz::doc::page_type::bbox)
+
+            .def("__repr__", [](maz::doc::page_type& self) -> std::string {
+                return fmt::format("bbox:{} lines:[{}] h_line:[{}] h_word:[{}]",
+                    self.bbox.to_string(), 
+                    self.lines().size(), 
+                    to_int(self.statistics().means.h_line),
+                    to_int(self.statistics().means.h_word)
+                );
+            })
         ;
 
         // ============
@@ -155,6 +170,11 @@ namespace maz {
             .def("enhance", &maz::ia::image::enhance)
             .def("bbox", &maz::ia::image::bbox)
             .def("base64_encode", &maz::ia::image::base64_encode)
+
+            .def("__repr__", [](maz::ia::image& self) -> std::string {
+                return fmt::format("bbox:{} bpp:[{}]",
+                    self.bbox().to_string(), pixGetDepth(self.raw()));
+            })
             ;
 
         // ============
@@ -186,7 +206,11 @@ namespace maz {
             .def("bboxes", &maz::la::columns::bboxes)
             .def("all_rows", &maz::la::columns::all_rows)
             .def("text", &maz::la::columns::text)
-            ;
+            .def("__repr__", [](maz::la::columns& self) -> std::string {
+                return fmt::format("bbox:{} bboxes:[{}] all_rows:[{}]",
+                    self.bbox().to_string(), self.bboxes().size(), self.all_rows().size());
+            })
+        ;
 
         // ============
 
@@ -198,6 +222,8 @@ namespace maz {
             .def("set_cells", py::overload_cast<const maz::la::gridline::cells_type&>(&maz::la::gridline::cells))
 
             .def("set_classes", &maz::la::gridline::classes)
+
+            .def("allow_joins", &maz::la::gridline::allow_joins)
 
             .def("hlines", py::overload_cast<>(&maz::la::gridline::hlines, py::const_))
             .def("vlines", py::overload_cast<>(&maz::la::gridline::vlines, py::const_))
