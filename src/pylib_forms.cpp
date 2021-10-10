@@ -3,7 +3,7 @@
 // ================
 // both python and leptonica define it
 #ifdef HAVE_FSTATAT
-    #undef HAVE_FSTATAT
+#undef HAVE_FSTATAT
 #endif
 
 #include "forms/ib/columns_text.h"
@@ -111,11 +111,15 @@ namespace maz {
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
             .def("parse", &maz::forms::ib::report::parse)
+        
             .def("types", &maz::forms::ib::report::types)
             .def("bboxes", &maz::forms::ib::report::bboxes)
             .def("size", &maz::forms::ib::report::size)
             .def("items", &maz::forms::ib::report::items)
             .def("set_text_debug", &maz::forms::ib::report::set_text_debug)
+            //
+            .def("pgrid", &maz::forms::ib::report::pgrid)
+            .def("pcols", &maz::forms::ib::report::pcols)
         ;
 
         // ============ 
@@ -125,8 +129,8 @@ namespace maz {
             [](maz::doc::document& doc,
                 maz::la::ptr_columns pcols,
                 maz::la::ptr_gridline pgrid,
-                const std::string& template_path) -> std::shared_ptr<maz::forms::ib::report> {
-                
+                const std::string& template_path) -> std::shared_ptr<maz::forms::ib::report> 
+            {
                     auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
                     // create the report
                     std::shared_ptr<maz::forms::ib::report> preport = maz::forms::ib::report::create(
@@ -149,20 +153,60 @@ namespace maz {
 
         m.def(
             "init_columns",
-            [](const doc::page_type& page, maz::la::columns& cols, maz::la::gridline& gridline) -> void {
+            [](const doc::page_type& page, 
+                maz::la::columns& cols, 
+                maz::la::gridline& gridline) -> void 
+            {
                 maz::forms::ib::report::init_columns(page, cols, gridline);
             },
             "Initialize columns from gridline");
 
         m.def(
             "detect_columns",
-            [](maz::doc::page_type& page, maz::ia::image& imgb, maz::la::ptr_gridline pgrid) -> std::shared_ptr<maz::la::columns> {
-                return maz::forms::ib::report::detect_columns(imgb, page, pgrid);
+            [](maz::doc::page_type& page, 
+                maz::ia::image& imgb, 
+                maz::la::ptr_gridline pgrid, 
+                int line_h,
+                const std::string& dbg) -> std::shared_ptr<maz::la::columns> 
+            {
+                return maz::forms::ib::report::detect_columns(imgb, page, pgrid, line_h, dbg);
             },
+            py::arg("page"),
+            py::arg("imgb"),
+            py::arg("pgrid"),
+            py::arg("line_h") = -1,
+            py::arg("dbg") = "",
             "Detect columns representation on an image",
             py::return_value_policy::copy);
 
-        m.def("rough_ib_lines", 
+        m.def(
+            "columns_from_table",
+            [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> 
+            {
+                if (!page.ia_elems().has("table_bbox")) return {};
+                if (!page.ia_elems().has("table_bboxes")) return {};
+
+                // stored as array
+                doc::bboxes_type table_bbox_arr = page.ia_elems().get("table_bbox")->bboxes();
+                if (1 != table_bbox_arr.size()) return {};
+                doc::bbox_type table_bbox = table_bbox_arr.front();
+
+                static constexpr size_t min_cols = maz::forms::ib::columns_from_text::min_cols;
+                doc::bboxes_type table_bboxes = page.ia_elems().get("table_bboxes")->bboxes();
+                if (table_bboxes.size() < min_cols) return {};
+
+                auto pcols = maz::la::columns::create(
+                    maz::forms::ib::columns_from_text::min_cols, page
+                );
+                pcols->set(table_bbox, table_bboxes);
+                if (pcols->empty()) return {};
+
+                return pcols;
+            },
+            "Detect columns representation on an image",
+                py::return_value_policy::copy);
+
+        m.def("rough_ib_lines",
             [](const maz::doc::lines_type& lines) -> doc::lines_type {
                 return forms::ib::rough_ib_lines(lines);
             },
