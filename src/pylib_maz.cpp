@@ -97,16 +97,16 @@ namespace maz {
             .def("ia_keys", [](maz::doc::page_type& page) -> std::list<std::string> {
                 return page.ia_elems().keys();
             })
+            .def("ia_bboxes", [](maz::doc::page_type& page, const std::string& key) -> doc::bboxes_type {
+                if (!page.ia_elems().has(key)) return {};
+                return page.ia_elems().get(key)->bboxes();
+            })
             .def("info_val", [](maz::doc::page_type& page, const std::string& k) -> std::string {
                 return page.get_info(k).dump();
             })
             .def("info_keys", [](maz::doc::page_type& page) -> std::list<std::string> {
                 return page.get_info_keys();
             })
-            .def("ia_bboxes", [](maz::doc::page_type& page, const std::string& key) -> doc::bboxes_type {
-                if (!page.ia_elems().has(key)) return {};
-                return page.ia_elems().get(key)->bboxes();
-                })
             .def("hlines", [](maz::doc::page_type& page) -> doc::bboxes_type {
                 // get hlines from IA
                 if (!page.ia_elems().has("hlines")) return {};

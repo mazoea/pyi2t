@@ -113,6 +113,8 @@ namespace maz {
             .def("parse", &maz::forms::ib::report::parse)
         
             .def("types", &maz::forms::ib::report::types)
+            .def("formats", &maz::forms::ib::report::formats)
+
             .def("bboxes", &maz::forms::ib::report::bboxes)
             .def("size", &maz::forms::ib::report::size)
             .def("items", &maz::forms::ib::report::items)
@@ -120,6 +122,10 @@ namespace maz {
             //
             .def("pgrid", &maz::forms::ib::report::pgrid)
             .def("pcols", &maz::forms::ib::report::pcols)
+            //
+            .def("save_checkpoint", 
+                py::overload_cast<const std::string&, const std::string&>(&maz::forms::ib::report::save_checkpoint),
+                py::arg("key"), py::arg("tags") = "")
         ;
 
         // ============ 
@@ -211,7 +217,7 @@ namespace maz {
             py::arg("imgb"),
             py::arg("ib_bbox"),
             py::arg("dbg") = "",
-            "Decide if we can use the columns from a generic table layou",
+            "Decide if we can use the columns from a generic table layout",
             py::return_value_policy::copy
         );
 
