@@ -139,7 +139,8 @@ namespace maz {
                     return preport;
             },
             "Initialize report",
-                py::return_value_policy::copy);
+            py::return_value_policy::copy
+        );
 
         m.def(
             "create_columns",
@@ -149,7 +150,8 @@ namespace maz {
                 );
             },
             "Initialize columns for further processing, should be filled subsequently",
-                py::return_value_policy::copy);
+            py::return_value_policy::copy
+        );
 
         m.def(
             "init_columns",
@@ -159,7 +161,8 @@ namespace maz {
             {
                 maz::forms::ib::report::init_columns(page, cols, gridline);
             },
-            "Initialize columns from gridline");
+            "Initialize columns from gridline"
+        );
 
         m.def(
             "detect_columns",
@@ -177,11 +180,15 @@ namespace maz {
             py::arg("line_h") = -1,
             py::arg("dbg") = "",
             "Detect columns representation on an image",
-            py::return_value_policy::copy);
+            py::return_value_policy::copy
+        );
 
         m.def(
             "columns_from_table",
-            [](maz::doc::page_type& page) -> std::shared_ptr<maz::la::columns> 
+            [](maz::doc::page_type& page, 
+                const ia::image& imgb, 
+                const doc::bbox_type& ib_bbox, 
+                const std::string& dbg) -> std::shared_ptr<maz::la::columns> 
             {
                 if (!page.ia_elems().has("table_bbox")) return {};
                 if (!page.ia_elems().has("table_bboxes")) return {};
@@ -195,23 +202,26 @@ namespace maz {
                 doc::bboxes_type table_bboxes = page.ia_elems().get("table_bboxes")->bboxes();
                 if (table_bboxes.size() < min_cols) return {};
 
-                auto pcols = maz::la::columns::create(
-                    maz::forms::ib::columns_from_text::min_cols, page
+                la::ptr_columns pcols = maz::forms::ib::report::use_table_columns(
+                    imgb, page.lines(), ib_bbox, table_bbox, table_bboxes, dbg
                 );
-                pcols->set(table_bbox, table_bboxes);
-                if (pcols->empty()) return {};
-
                 return pcols;
             },
-            "Detect columns representation on an image",
-                py::return_value_policy::copy);
+            py::arg("page"),
+            py::arg("imgb"),
+            py::arg("ib_bbox"),
+            py::arg("dbg") = "",
+            "Decide if we can use the columns from a generic table layou",
+            py::return_value_policy::copy
+        );
 
         m.def("rough_ib_lines",
             [](const maz::doc::lines_type& lines) -> doc::lines_type {
                 return forms::ib::rough_ib_lines(lines);
             },
             "Returns lines that are IB like.",
-            py::return_value_policy::copy);
+            py::return_value_policy::copy
+        );
 
     }
 
