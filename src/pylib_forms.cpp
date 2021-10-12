@@ -80,6 +80,7 @@ namespace maz {
             .def("clear", [](maz::forms::ib::columns& self, size_t i) {
                 self.clear(i);
             })
+            .def("moves", &maz::forms::ib::columns::moves)
             .def("__len__", &maz::forms::ib::columns::size)
             .def("__getitem__", [](const maz::forms::ib::columns& cols, size_t i) ->maz::forms::ib::base_column {
                 if (i >= cols.size()) throw py::index_error();
@@ -135,15 +136,28 @@ namespace maz {
             [](maz::doc::document& doc,
                 maz::la::ptr_columns pcols,
                 maz::la::ptr_gridline pgrid,
-                const std::string& template_path) -> std::shared_ptr<maz::forms::ib::report> 
+                const std::string& template_path,
+                const maz::ia::image& imgb,
+                const std::string& dbg) -> std::shared_ptr<maz::forms::ib::report> 
             {
                     auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
+
+                    // we need shared_ptr, internally pixClone ensures we will not
+                    // double free the memory
+                    maz::ia::ptr_image pimg = std::make_shared<maz::ia::image>(imgb);
+
                     // create the report
                     std::shared_ptr<maz::forms::ib::report> preport = maz::forms::ib::report::create(
-                        doc, pcols, pgrid, ptpl, {}
+                        doc, pcols, pgrid, ptpl, pimg, dbg
                     );
                     return preport;
             },
+            py::arg("doc"), 
+            py::arg("pcols"),
+            py::arg("pgrid"),
+            py::arg("template_path"),
+            py::arg("imgb"),
+            py::arg("dbg") = "",
             "Initialize report",
             py::return_value_policy::copy
         );
