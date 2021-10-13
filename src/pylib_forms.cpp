@@ -124,9 +124,10 @@ namespace maz {
             .def("pgrid", &maz::forms::ib::report::pgrid)
             .def("pcols", &maz::forms::ib::report::pcols)
             //
-            .def("save_checkpoint", 
+            .def("save_checkpoint",
                 py::overload_cast<const std::string&, const std::string&>(&maz::forms::ib::report::save_checkpoint),
                 py::arg("key"), py::arg("tags") = "")
+            .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
         ;
 
         // ============ 
