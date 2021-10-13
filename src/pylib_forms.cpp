@@ -86,6 +86,9 @@ namespace maz {
                 if (i >= cols.size()) throw py::index_error();
                 return cols[i];
             }, py::return_value_policy::reference_internal)
+            .def("__repr__", [](maz::forms::ib::columns& self) -> std::string {
+                return self.str({});
+            })
         ;
 
         // ============ 
