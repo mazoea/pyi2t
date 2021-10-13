@@ -114,8 +114,9 @@ namespace maz {
             })
             .def("vlines", [](maz::doc::page_type& page) -> doc::bboxes_type {
                 // get vlines only if table 
-                auto js = page.get_layout("table_vlines");
-                return maz::doc::json2bboxes(js);
+                if (!page.ia_elems().has("table_bbox")) return {};
+                // form_ib.cpp:post_process:185
+                return page.ia_elems().get("vlines")->bboxes();
             })
             .def("has_image", [](maz::doc::page_type& page, const std::string& key) -> bool {
                 return page.images().has(key);
