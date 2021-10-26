@@ -11,6 +11,7 @@ import ctypes
 import tempfile
 import time
 import base64
+
 # =================
 _logger = logging.getLogger("i2t")
 _this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -69,7 +70,9 @@ def perf_method(min_t=0.2):
         def _enclose(self, *args, **kw):
             with perf_probe(func.__name__, min_t):
                 return func(self, *args, **kw)
+
         return _enclose
+
     return wrap
 
 
@@ -309,7 +312,7 @@ class _i2t(object):
         """
         return self._impl.la_gridrows(gridcells)
 
-    def create_report(self, doc, cols, grid):
+    def create_report(self, doc, cols, grid, imgb, dbg=''):
         """
             Create IB report object
         :param doc:
@@ -319,7 +322,7 @@ class _i2t(object):
         :return:
         """
         tmpl_path = os.path.join(self._dirs.configs, 'ib-template.json')
-        return self._impl.ib_report(doc, cols, grid, tmpl_path)
+        return self._impl.create_report(doc, cols, grid, tmpl_path, imgb, dbg=dbg)
 
     def create_image_from_png(self, image_date_base64_png):
         return self._impl.image(image_date_base64_png, 'image/png')
@@ -338,16 +341,29 @@ class _i2t(object):
     def load_columns_from_grid(self, doc, grid_info, grid):
         return self._impl.load_columns_from_grid(doc, grid_info, grid)
 
-    def detect_columns(self, doc, imgb):
-        return self._impl.detect_columns(doc, imgb)
+    def create_columns(self, page):
+        """
+            Create empty columns with minimal columns
+            set but without any rows.
+        """
+        return self._impl.create_columns(page)
 
-    def init_columns(self, doc):
-        return self._impl.init_columns(doc)
+    def columns_from_table(self, page, imgb, ib_bbox, dbg=''):
+        """
+            Try to use the columns detected by the (specific) table layout.
+        """
+        return self._impl.columns_from_table(page, imgb, ib_bbox, dbg)
+
+    def detect_columns(self, page, imgb, grid_info):
+        """
+            Detect columns on a page.
+        """
+        return self._impl.detect_columns(page, imgb, grid_info)
 
     def rough_ib_lines(self, lines):
         return self._impl.rough_ib_lines(lines)
 
-    def get_segments(self, page):
+    def get_simple_segments(self, page):
         """
             Parse `page.lines()` into segment bboxes.
         :param page: See `doc.last_page()`
