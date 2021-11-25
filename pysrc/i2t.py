@@ -266,7 +266,8 @@ class _i2t(object):
 
         :return: True/False, str, bbox/None
         """
-        ibf = self._impl.ml_ib_form(page, self._dirs.configs)
+        ibf = self._impl.ml_ib_form(self._dirs.configs)
+        ibf.process(page)
         doc_tp = ibf.type()
         is_ib = doc_tp.is_ib()
         type_str = doc_tp.str()
