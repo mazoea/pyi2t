@@ -33,8 +33,8 @@ namespace maz {
             .def("str", &maz::ml::classify::ib_form::form_type::str);
 
         py::class_<maz::ml::classify::ib_form, maz::ml::features>(m, "ml_ib_form")
-            .def(py::init<const std::string&, const std::string&>())
-            .def(py::init<maz::doc::page_type&, const std::string&>())
+            .def(py::init<const std::string&>())
+            .def("process", &maz::ml::classify::ib_form::process)
             .def("type", &maz::ml::classify::ib_form::type)
             .def("get_ib_section", &maz::ml::classify::ib_form::get_ib_section);
 
