@@ -336,6 +336,11 @@ class _i2t(object):
 
     # =============
 
+    def ia_lines(self, imgb, letter_h, dbg=''):
+        return self._impl.ia_lines(imgb, letter_h, dbg)
+
+    # =============
+
     def extend_grid(self):
         return self._impl.extend_grid()
 
