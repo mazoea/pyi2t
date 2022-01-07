@@ -43,6 +43,7 @@ PYBIND11_MODULE(PYMODULENAME, m)
     // ============
 
     maz::init_maz(m);
+    maz::init_ia(m);
     maz::init_ocr(m);
     maz::init_forms(m);
 }

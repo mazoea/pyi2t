@@ -126,6 +126,10 @@ namespace maz {
             })
             .def_readonly("bbox", &maz::doc::page_type::bbox)
 
+            .def("mean_letter_h", [](maz::doc::page_type& self) -> double {
+                return self.statistics().means.h_word;
+            })
+
             .def("__repr__", [](maz::doc::page_type& self) -> std::string {
                 return fmt::format("bbox:{} lines:[{}] h_line:[{}] h_word:[{}]",
                     self.bbox.to_string(), 

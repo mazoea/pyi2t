@@ -15,6 +15,9 @@ namespace maz {
     /** Export maz base. */
     void init_maz(pybind11::module&);
 
+    /** Export ia related. */
+    void init_ia(pybind11::module&);
+
     /** Export OCR related functions. */
     void init_ocr(pybind11::module&);
 
