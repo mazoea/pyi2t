@@ -36,16 +36,19 @@ def os_windows():
 def get_dirs():
     bin_dir = None
     if os_windows():
-        for d in ('../../../../bin/Debug/', ):
-            arr = glob.glob(os.path.join(_this_dir, d, 'pyi2t*pyd'))
-            if len(arr) == 1:
-                bin_dir = os.path.join(_this_dir, d)
-                break
+        dll_glob, dirs = 'pyi2t*pyd', ['../../../../bin/Debug/']
     else:
-        for d in ('../../../../bin-nix/', ):
-            arr = glob.glob(os.path.join(_this_dir, d, 'pyi2t*so'))
-            if len(arr) == 1:
-                bin_dir = os.path.join(_this_dir, d)
-                break
+        dll_glob, dirs = 'pyi2t*so', ['../../../../bin-nix/']
+
+    env_dir = os.environ.get('PYI2T_BINDIR', None)
+    if env_dir is not None and os.path.exists(env_dir):
+        dirs.insert(0, env_dir)
+
+    for d in dirs:
+        arr = glob.glob(os.path.join(_this_dir, d, dll_glob))
+        if len(arr) == 1:
+            bin_dir = os.path.join(_this_dir, d)
+            break
+
     from i2t import dir_spec
     return dir_spec(bin_dir=bin_dir, config_dir=config_dir, lang_dir=lang_dir)

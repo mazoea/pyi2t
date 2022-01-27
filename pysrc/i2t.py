@@ -373,6 +373,10 @@ class _i2t(object):
         seg = self._impl.ib_page_segments_detector(page.lines())
         return seg.segments()
 
+    def subtypes_dict(self, subtypes_arr):
+        s = self._impl.json_subtypes_s(subtypes_arr)
+        return json.loads(s)
+
     # =============
 
     def _ocr_line_from_file(self, img, engine, binarize):

@@ -10,6 +10,7 @@
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
 #include "ml/forms.h"
+#include "segment/ocr/form_ib.h"
 
 namespace py = pybind11;
 
@@ -245,6 +246,13 @@ namespace maz {
                 return forms::ib::rough_ib_lines(lines);
             },
             "Returns lines that are IB like.",
+            py::return_value_policy::copy
+        );
+
+        m.def("json_subtypes_s", [](std::list<std::string> subtypes) -> std::string {
+                return maz::segment::ib::data::to_json(subtypes).dump(0);
+            },
+            "Returns subtypes serialized as json string in the correct response format.",
             py::return_value_policy::copy
         );
 

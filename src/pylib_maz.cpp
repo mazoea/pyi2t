@@ -164,7 +164,7 @@ namespace maz {
             .def("hash", &maz::ia::image::hash)
             .def("raw", &maz::ia::image::raw, py::return_value_policy::copy)
             .def("is_binary", &maz::ia::image::is_binary)
-            .def("to8bpp", &maz::ia::image::to8bpp)
+            .def("to8bpp", &maz::ia::image::to8bpp, py::arg("fast") = true)
             .def("deskew", &maz::ia::image::deskew)
             .def("invert", &maz::ia::image::invert)
             .def("binarize_otsu", &maz::ia::image::binarize_otsu)
