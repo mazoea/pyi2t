@@ -37,6 +37,14 @@ class Test_basic(unittest.TestCase):
             print(val)
             self.assertEqual(val, exp)
 
+    def test_is_ib_line(self):
+        """ test_is_ib_line """
+        m = get_i2t()
+        string = "09/18/2021 93010 93010 ROUTINE ELECTROCARDIOGRAM (EKG) USING 1 $115.00"
+
+        val = m.is_ib_line(string)
+        print(val)
+
     def test_ocr3(self):
         """ test_version """
         m = get_i2t()
