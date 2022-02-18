@@ -389,6 +389,11 @@ class _i2t(object):
 
     # =============
 
+    def is_nodate_ib_line(self, string):
+        return self._impl.is_nodate_ib_line(string)
+
+    # =============
+
     def _ocr_line_from_file(self, img, engine, binarize):
         with perf_probe('binarize'):
             if binarize == 'otsu':

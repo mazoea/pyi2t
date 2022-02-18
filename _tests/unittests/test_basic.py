@@ -45,6 +45,14 @@ class Test_basic(unittest.TestCase):
         val = m.is_ib_line(string)
         print(val)
 
+    def test_is_nodate_ib_line(self):
+        """ test_is_nodate_ib_line """
+        m = get_i2t()
+        string = "93010 ROUTINE ELECTROCARDIOGRAM (EKG) USING 1 $115.00"
+
+        val = m.is_nodate_ib_line(string)
+        print(val)
+
     def test_ocr3(self):
         """ test_version """
         m = get_i2t()

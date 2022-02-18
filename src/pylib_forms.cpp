@@ -256,12 +256,19 @@ namespace maz {
             py::return_value_policy::copy
         );
 
-
         m.def("is_ib_line",
             [](doc::utf8_string& text) -> bool {
                 return forms::ib::line::tp_no != forms::ib::line::is_default(text);
             },
             "Returns if line is IB.",
+            py::return_value_policy::copy
+        );
+
+                m.def("is_nodate_ib_line",
+            [](doc::utf8_string& text) -> bool {
+                return forms::ib::line::tp_no != forms::ib::line::is_without_date(text);
+            },
+            "Returns if line without date is IB.",
             py::return_value_policy::copy
         );
     }
