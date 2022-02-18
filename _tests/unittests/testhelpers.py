@@ -40,6 +40,10 @@ def get_dirs():
     else:
         dll_glob, dirs = 'pyi2t*so', ['../../../../bin-nix/']
 
+    path_to_dir = os.path.join(_this_dir, dirs[0])
+    if not os.path.exists(path_to_dir):
+        raise Exception("expected dir [%s] does not exists" % dirs)
+
     env_dir = os.environ.get('PYI2T_BINDIR', None)
     if env_dir is not None and os.path.exists(env_dir):
         dirs.insert(0, env_dir)
