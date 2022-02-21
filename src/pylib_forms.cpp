@@ -37,7 +37,10 @@ namespace maz {
             .def(py::init<const std::string&>())
             .def("process", &maz::ml::classify::ib_form::process)
             .def("type", &maz::ml::classify::ib_form::type)
-            .def("get_ib_section", &maz::ml::classify::ib_form::get_ib_section);
+            .def("get_ib_section", &maz::ml::classify::ib_form::get_ib_section)
+            .def("json_features_s", [](maz::ml::classify::ib_form& self) -> std::string {
+                return self.to_json(serial::normal).dump(0);
+            });
 
         py::class_<maz::forms::ib::page_segments_detector>(m, "ib_page_segments_detector")
             .def(py::init<const maz::doc::lines_type&>())
