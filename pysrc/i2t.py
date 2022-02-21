@@ -272,7 +272,8 @@ class _i2t(object):
         is_ib = doc_tp.is_ib()
         type_str = doc_tp.str()
         ib_bbox = ibf.get_ib_section() if is_ib else None
-        features = ibf.json_features_s()
+        features_s = ibf.json_features_s()
+        features = json.loads(features_s) if len(features_s) > 0 else {}
         return is_ib, type_str, ib_bbox, features
 
     def ml_ib_form_prepare(self, doc):
