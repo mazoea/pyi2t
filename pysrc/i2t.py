@@ -393,5 +393,13 @@ class _i2t(object):
             s, words_arr = self._impl.ocr_line(engine, img)
         return s, words_arr
 
+     # =============
+
+    def bad_crash_segmentation_fault(self):
+        """
+        Calling of this function causes crash of python interpreter.
+        """
+        self._impl.bad_crash_segmentation_fault()
+
 
 m = _i2t()

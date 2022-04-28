@@ -240,6 +240,13 @@ namespace maz {
             })
         ;
 
+        m.def(
+            "bad_crash_segmentation_fault",
+            []() {
+                doc::ptr_word pw = nullptr;
+                pw->text = "crash";
+            },
+            "Calling of this function causes segmentation fault crash.");
     }
     // clang-format on
 
