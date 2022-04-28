@@ -242,7 +242,7 @@ namespace maz {
 
         m.def(
             "bad_crash_segmentation_fault",
-            [](std::string text) {
+            [](std::string& text) {
                 doc::ptr_word pw = nullptr;
                 pw->text = text;
             },
