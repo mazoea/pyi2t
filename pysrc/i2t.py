@@ -199,14 +199,10 @@ class _i2t(object):
         import locale
         locale.setlocale(locale.LC_ALL, 'C')
 
-        print("Hello1")
-
         if os_windows():
             import pyi2t
             self._impl = pyi2t
         else:
-            print("Hello2")
-            print(real_module_dir_str)
             # load dependencies explicitly otherwise LD_LIBRARY_DIR would have to be
             # used
             # IF you encounter with PyCHARM an `invalid free()` or similar, disable
@@ -399,11 +395,11 @@ class _i2t(object):
 
      # =============
 
-    def bad_crash_segmentation_fault(self, text):
+    def bad_crash_segmentation_fault(self):
         """
         Calling of this function causes crash of python interpreter.
         """
-        return self._impl.bad_crash_segmentation_fault(text)
+        return self._impl.bad_crash_segmentation_fault()
 
 
 m = _i2t()
