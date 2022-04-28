@@ -242,9 +242,9 @@ namespace maz {
 
         m.def(
             "bad_crash_segmentation_fault",
-            []() {
+            [](std::string text) {
                 doc::ptr_word pw = nullptr;
-                pw->text = "crash";
+                pw->text = text;
             },
             "Calling of this function causes segmentation fault crash.");
     }
