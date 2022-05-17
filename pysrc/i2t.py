@@ -240,7 +240,10 @@ class _i2t(object):
         self.t4.init(dirs.lang, 'maz-lstm', env4)
         _logger.info('OCR models loaded')
 
-    def bin_path(self):
+    def bin_path(self) -> str:
+        """
+            Return binary path
+        """
         return self.path
 
     # =============
