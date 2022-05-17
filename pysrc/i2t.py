@@ -181,6 +181,7 @@ class _i2t(object):
     def __init__(self):
         """ Default ctor. """
         self._impl = None
+        self.path = None
         self._deps = []
         self._dirs = None
         if os.path.exists(os.path.join(_this_dir, 'bins')):
@@ -215,7 +216,7 @@ class _i2t(object):
                 self._impl = importlib.import_module('pyi2t2')
             else:
                 self._impl = importlib.import_module('pyi2t3')
-
+        self.path = self._impl.__file__
         if os.environ.get('MAZ_EXT_OCR_MODELS', '1') == '0':
             return
 
@@ -238,6 +239,9 @@ class _i2t(object):
         self.t4 = oem.reocr()
         self.t4.init(dirs.lang, 'maz-lstm', env4)
         _logger.info('OCR models loaded')
+
+    def bin_path(self):
+        return self.path
 
     # =============
 
