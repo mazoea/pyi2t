@@ -2,6 +2,11 @@
 // date: 2020
 #pragma once
 
+// hotfix to be able to build with new version of visual studio
+#if defined(_MSC_VER)
+#include <corecrt.h>
+#endif
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
