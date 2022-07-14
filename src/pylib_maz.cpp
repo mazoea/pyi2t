@@ -71,6 +71,8 @@ namespace maz {
         ;
 
         py::class_<maz::doc::word_type, std::shared_ptr<maz::doc::word_type>>(m, "word")
+            .def_readonly("id", &maz::doc::word_type::id)
+            .def_readonly("orientation", &maz::doc::word_type::orientation)
             .def_readwrite("bbox", &maz::doc::base_element::bbox)
             .def_readwrite("text", &maz::doc::base_element::text)
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
