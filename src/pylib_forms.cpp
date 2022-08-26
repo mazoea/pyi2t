@@ -119,6 +119,7 @@ namespace maz {
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
+            .def("process_fake_wrap", &maz::forms::ib::report::process_fake_wrap)
             .def("parse", &maz::forms::ib::report::parse)
         
             .def("types", &maz::forms::ib::report::types)
