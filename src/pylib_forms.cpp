@@ -78,7 +78,7 @@ namespace maz {
             .value("k_charge", maz::forms::ib::base_column::type::k_charge)
             .export_values();
 
-        py::class_<maz::forms::ib::columns>(m, "ib_columns")
+        py::class_<maz::forms::ib::ptr_columns>(m, "ib_columns")
             .def("known", py::overload_cast<>(&maz::forms::ib::columns::known, py::const_))
             .def("unknown", &maz::forms::ib::columns::unknown)
             .def("disable", &maz::forms::ib::columns::disable)
@@ -114,13 +114,15 @@ namespace maz {
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
         ;
 
-        py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>>(m, "ib_report")
-            .def("find_columns", &maz::forms::ib::report::find_columns)
+        py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");
+        preport.def("find_columns", &maz::forms::ib::report::find_columns)
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
             .def("process_fake_wrap", &maz::forms::ib::report::process_fake_wrap)
             .def("parse", &maz::forms::ib::report::parse)
+
+            .def("is_allowed", &maz::forms::ib::report::is_allowed)
         
             .def("types", &maz::forms::ib::report::types)
             .def("formats", &maz::forms::ib::report::formats)
@@ -138,6 +140,16 @@ namespace maz {
                 py::arg("key"), py::arg("tags") = "")
             .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
         ;
+
+         py::enum_<maz::forms::ib::report::stage>(preport, "ib_report_stage")
+            .value("detect_columns", maz::forms::ib::report::stage::detect_columns)
+            .value("find_columns", maz::forms::ib::report::stage::find_columns)
+            .value("handle_corner_case", maz::forms::ib::report::stage::handle_corner_case)
+            .value("words_to_columns", maz::forms::ib::report::stage::words_to_columns)
+            .value("best_columns", maz::forms::ib::report::stage::best_columns)
+            .value("fake_wrap", maz::forms::ib::report::stage::fake_wrap)
+            .value("parse", maz::forms::ib::report::stage::parse)
+            .export_values();
 
         // ============ 
 
