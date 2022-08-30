@@ -78,7 +78,7 @@ namespace maz {
             .value("k_charge", maz::forms::ib::base_column::type::k_charge)
             .export_values();
 
-        py::class_<maz::forms::ib::ptr_columns>(m, "ib_columns")
+        py::class_<maz::forms::ib::columns, maz::forms::ib::ptr_columns>(m, "ib_columns")
             .def("known", py::overload_cast<>(&maz::forms::ib::columns::known, py::const_))
             .def("unknown", &maz::forms::ib::columns::unknown)
             .def("disable", &maz::forms::ib::columns::disable)
