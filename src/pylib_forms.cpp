@@ -78,7 +78,7 @@ namespace maz {
             .value("k_charge", maz::forms::ib::base_column::type::k_charge)
             .export_values();
 
-        py::class_<maz::forms::ib::columns, maz::forms::ib::ptr_columns>(m, "ib_columns")
+        py::class_<maz::forms::ib::columns, std::shared_ptr<maz::forms::ib::columns>>(m, "ib_columns")
             .def("known", py::overload_cast<>(&maz::forms::ib::columns::known, py::const_))
             .def("unknown", &maz::forms::ib::columns::unknown)
             .def("disable", &maz::forms::ib::columns::disable)
@@ -142,13 +142,13 @@ namespace maz {
         ;
 
          py::enum_<maz::forms::ib::report::stage>(preport, "ib_report_stage")
-            .value("detect_columns", maz::forms::ib::report::stage::detect_columns)
-            .value("find_columns", maz::forms::ib::report::stage::find_columns)
-            .value("handle_corner_case", maz::forms::ib::report::stage::handle_corner_case)
-            .value("words_to_columns", maz::forms::ib::report::stage::words_to_columns)
-            .value("best_columns", maz::forms::ib::report::stage::best_columns)
-            .value("fake_wrap", maz::forms::ib::report::stage::fake_wrap)
-            .value("parse", maz::forms::ib::report::stage::parse)
+            .value("k_detect_columns", maz::forms::ib::report::stage::k_detect_columns)
+            .value("k_find_columns", maz::forms::ib::report::stage::k_find_columns)
+            .value("k_handle_corner_case", maz::forms::ib::report::stage::k_handle_corner_case)
+            .value("k_words_to_columns", maz::forms::ib::report::stage::k_words_to_columns)
+            .value("k_best_columns", maz::forms::ib::report::stage::k_best_columns)
+            .value("k_fake_wrap", maz::forms::ib::report::stage::k_fake_wrap)
+            .value("k_parse", maz::forms::ib::report::stage::k_parse)
             .export_values();
 
         // ============ 
