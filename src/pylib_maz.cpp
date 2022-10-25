@@ -77,6 +77,9 @@ namespace maz {
             .def_readwrite("text", &maz::doc::base_element::text)
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
             .def_readwrite("detail", &maz::doc::word_type::detail)
+            .def("json_str", [](maz::doc::word_type& word) {
+                    return word.to_json(serial::detail::normal).dump(-1);
+                })
         ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
