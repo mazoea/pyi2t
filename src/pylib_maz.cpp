@@ -76,6 +76,7 @@ namespace maz {
             .def_readwrite("bbox", &maz::doc::base_element::bbox)
             .def_readwrite("text", &maz::doc::base_element::text)
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
+            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("indent") = -1)
             .def_readwrite("detail", &maz::doc::word_type::detail)
         ;
 
