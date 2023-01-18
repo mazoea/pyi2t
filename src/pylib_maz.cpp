@@ -78,6 +78,9 @@ namespace maz {
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
             .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("indent") = -1)
             .def_readwrite("detail", &maz::doc::word_type::detail)
+            .def("json_str", [](maz::doc::word_type& word) {
+                    return word.to_json(serial::detail::normal).dump(-1);
+                })
         ;
 
         py::class_<maz::doc::line_type, std::shared_ptr<maz::doc::line_type>>(m, "line")
