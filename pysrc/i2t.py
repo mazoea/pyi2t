@@ -191,7 +191,7 @@ class _i2t(object):
         self.t4 = None
 
     def init(self, dirs):
-        _logger.info('OCR models loading')
+        _logger.debug('OCR models loading')
         self._dirs = dirs
         real_module_dir_str = os.path.abspath(dirs.bins)
         if real_module_dir_str not in sys.path:
@@ -218,6 +218,7 @@ class _i2t(object):
                 self._impl = importlib.import_module('pyi2t3')
         self._path = self._impl.__file__
         if os.environ.get('MAZ_EXT_OCR_MODELS', '1') == '0':
+            _logger.debug('OCR models (lazy) loaded')
             return
 
         oem = self._impl.ocr_engine_manager('tesseract3', 'tesseract4')
