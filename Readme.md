@@ -9,3 +9,7 @@ The interface consists of:
 # Testing
 
 Use `PYI2T_BINDIR` environmental variable to point to the directory with the python bindings binaries.
+
+# Exposing symbols from libs (in linux)
+- all function are hidden by default
+- in case you want to expose certain function, add the function name into `libcode.version` file under `global:` functions
