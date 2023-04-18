@@ -9,6 +9,7 @@
 #include "forms/ib/columns_text.h"
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
+#include "forms/ib/rough.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
 
