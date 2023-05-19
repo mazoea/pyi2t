@@ -212,7 +212,9 @@ namespace maz {
             .def("__len__", &maz::la::columns::size)
             .def("bbox", &maz::la::columns::bbox)
             .def("bboxes", &maz::la::columns::bboxes)
-            .def("all_rows", &maz::la::columns::all_rows)
+            .def("all_rows", [](maz::la::columns& self) {
+                return self.all_rows();
+            })
             .def("text", &maz::la::columns::text)
             .def("__repr__", [](maz::la::columns& self) -> std::string {
                 return fmt::format("bbox:{} bboxes:[{}] all_rows:[{}]",
