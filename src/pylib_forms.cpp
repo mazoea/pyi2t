@@ -44,7 +44,7 @@ namespace maz {
             });
 
         py::class_<maz::forms::ib::page_segments_detector>(m, "ib_page_segments_detector")
-            .def(py::init<const maz::doc::lines_type&>())
+            .def(py::init<const maz::doc::lines_type&, maz::doc::bboxes_type>())
             .def("size", &maz::forms::ib::page_segments_detector::size)
             .def("segments", &maz::forms::ib::page_segments_detector::segments);
 

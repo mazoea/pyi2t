@@ -378,13 +378,14 @@ class _i2t(object):
     def rough_ib_lines(self, lines):
         return self._impl.rough_ib_lines(lines)
 
-    def get_simple_segments(self, page):
+    def get_simple_segments(self, page, hlines):
         """
             Parse `page.lines()` into segment bboxes.
         :param page: See `doc.last_page()`
         :return: List of segments
         """
-        seg = self._impl.ib_page_segments_detector(page.lines())
+        hlines = [] if hlines is None else hlines
+        seg = self._impl.ib_page_segments_detector(page.lines(), hlines)
         return seg.segments()
 
     def subtypes_dict(self, subtypes_arr):
