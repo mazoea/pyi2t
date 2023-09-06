@@ -123,7 +123,7 @@ namespace maz {
             .def("process_fake_wrap", &maz::forms::ib::report::process_fake_wrap)
             .def("parse", &maz::forms::ib::report::parse)
 
-            .def("is_allowed", &maz::forms::ib::report::is_allowed)
+            //.def("is_allowed", &maz::forms::ib::report::is_allowed)
         
             .def("types", &maz::forms::ib::report::types)
             .def("formats", &maz::forms::ib::report::formats)
