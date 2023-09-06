@@ -142,15 +142,15 @@ namespace maz {
             .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
         ;
 
-         py::enum_<maz::forms::ib::report::stage>(preport, "ib_report_stage")
-            .value("k_detect_columns", maz::forms::ib::report::stage::k_detect_columns)
-            .value("k_find_columns", maz::forms::ib::report::stage::k_find_columns)
-            .value("k_handle_corner_case", maz::forms::ib::report::stage::k_handle_corner_case)
-            .value("k_words_to_columns", maz::forms::ib::report::stage::k_words_to_columns)
-            .value("k_best_columns", maz::forms::ib::report::stage::k_best_columns)
-            .value("k_fake_wrap", maz::forms::ib::report::stage::k_fake_wrap)
-            .value("k_parse", maz::forms::ib::report::stage::k_parse)
-            .export_values();
+        //  py::enum_<maz::forms::ib::report::stage>(preport, "ib_report_stage")
+        //     .value("k_detect_columns", maz::forms::ib::report::stage::k_detect_columns)
+        //     .value("k_find_columns", maz::forms::ib::report::stage::k_find_columns)
+        //     .value("k_handle_corner_case", maz::forms::ib::report::stage::k_handle_corner_case)
+        //     .value("k_words_to_columns", maz::forms::ib::report::stage::k_words_to_columns)
+        //     .value("k_best_columns", maz::forms::ib::report::stage::k_best_columns)
+        //     .value("k_fake_wrap", maz::forms::ib::report::stage::k_fake_wrap)
+        //     .value("k_parse", maz::forms::ib::report::stage::k_parse)
+        //     .export_values();
 
         // ============ 
 
