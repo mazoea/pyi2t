@@ -121,15 +121,20 @@ namespace maz {
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
 
-            .def("parse", [](maz::forms::ib::report& r, maz::forms::ib::ptr_columns pib_cols) -> bool {
+            .def("parse", [](maz::forms::ib::report& r, maz::forms::ib::ptr_columns pib_cols) -> maz::forms::ib::ptr_columns {
                 r.pre_parse(pib_cols);
 
                 if (!pib_cols || 0 == pib_cols->known())
                 {
-                    return false;
+                    return {};
                 }
 
-                return r.parse(*pib_cols);
+                if (!r.parse(*pib_cols))
+                {
+                    return {};
+                }
+
+                return pib_cols;
             })
 
             .def("is_allowed", [](const maz::forms::ib::report& r, std::string key_stage) -> bool {
