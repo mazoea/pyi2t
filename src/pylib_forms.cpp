@@ -144,7 +144,7 @@ namespace maz {
                 py::arg("key"), py::arg("tags") = "")
             .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
             //
-            .def_property_readonly_static("k_detect_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_find_columns; })
+            .def_property_readonly_static("k_find_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_find_columns; })
             .def_property_readonly_static("k_handle_corner_case", [](const py::object &) { return &maz::forms::ib::form_template::step_handle_corner_case; })
             .def_property_readonly_static("k_words_to_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_words_to_columns; })
             .def_property_readonly_static("k_best_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_best_columns; })
