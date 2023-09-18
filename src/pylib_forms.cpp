@@ -157,7 +157,12 @@ namespace maz {
             .def("save_checkpoint",
                 py::overload_cast<const std::string&, const std::string&>(&maz::forms::ib::report::save_checkpoint),
                 py::arg("key"), py::arg("tags") = "")
-            .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
+            .def("save_ib_info",[](maz::forms::ib::report& r, maz::forms::ib::ptr_columns pib_cols, doc::bboxes_type col_bboxes) -> bool {
+               
+                if (!pib_cols) return false;
+                r.save_ib_info(*pib_cols, col_bboxes);
+                return true;
+            })
             //
             .def_property_readonly_static("k_find_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_find_columns; })
             .def_property_readonly_static("k_handle_corner_case", [](const py::object &) { return &maz::forms::ib::form_template::step_handle_corner_case; })
