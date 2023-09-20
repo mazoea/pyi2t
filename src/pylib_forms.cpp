@@ -120,10 +120,28 @@ namespace maz {
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
             .def("words_to_columns", &maz::forms::ib::report::words_to_columns)
             .def("best_columns", &maz::forms::ib::report::best_columns)
-            .def("process_fake_wrap", &maz::forms::ib::report::process_fake_wrap)
-            .def("parse", &maz::forms::ib::report::parse)
 
-            .def("is_allowed", &maz::forms::ib::report::is_allowed)
+            .def("parse", [](maz::forms::ib::report& r, maz::forms::ib::ptr_columns pib_cols) -> maz::forms::ib::ptr_columns {
+                r.pre_parse(pib_cols);
+
+                if (!pib_cols || 0 == pib_cols->known())
+                {
+                    return {};
+                }
+
+                if (!r.parse(*pib_cols))
+                {
+                    return {};
+                }
+
+                return pib_cols;
+            })
+
+            .def("is_allowed", [](const maz::forms::ib::report& r, std::string key_stage) -> bool {
+                if (!r.ptemplate()) return true;
+                if (!r.ptemplate()->is_allowed(key_stage)) return false;
+                return true;
+            })
         
             .def("types", &maz::forms::ib::report::types)
             .def("formats", &maz::forms::ib::report::formats)
@@ -139,18 +157,19 @@ namespace maz {
             .def("save_checkpoint",
                 py::overload_cast<const std::string&, const std::string&>(&maz::forms::ib::report::save_checkpoint),
                 py::arg("key"), py::arg("tags") = "")
-            .def("save_ib_info", &maz::forms::ib::report::save_ib_info)
+            .def("save_ib_info",[](maz::forms::ib::report& r, maz::forms::ib::ptr_columns pib_cols, doc::bboxes_type col_bboxes) -> bool {
+               
+                if (!pib_cols) return false;
+                r.save_ib_info(*pib_cols, col_bboxes);
+                return true;
+            })
+            //
+            .def_property_readonly_static("k_find_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_find_columns; })
+            .def_property_readonly_static("k_handle_corner_case", [](const py::object &) { return &maz::forms::ib::form_template::step_handle_corner_case; })
+            .def_property_readonly_static("k_words_to_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_words_to_columns; })
+            .def_property_readonly_static("k_best_columns", [](const py::object &) { return &maz::forms::ib::form_template::step_best_columns; })
+            .def_property_readonly_static("k_parse", [](const py::object &) { return &maz::forms::ib::form_template::step_parse; })
         ;
-
-         py::enum_<maz::forms::ib::report::stage>(preport, "ib_report_stage")
-            .value("k_detect_columns", maz::forms::ib::report::stage::k_detect_columns)
-            .value("k_find_columns", maz::forms::ib::report::stage::k_find_columns)
-            .value("k_handle_corner_case", maz::forms::ib::report::stage::k_handle_corner_case)
-            .value("k_words_to_columns", maz::forms::ib::report::stage::k_words_to_columns)
-            .value("k_best_columns", maz::forms::ib::report::stage::k_best_columns)
-            .value("k_fake_wrap", maz::forms::ib::report::stage::k_fake_wrap)
-            .value("k_parse", maz::forms::ib::report::stage::k_parse)
-            .export_values();
 
         // ============ 
 
