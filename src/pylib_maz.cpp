@@ -152,6 +152,10 @@ namespace maz {
                     serial::json_dict js = serial::json_impl::parse(js_str);
                     doc.from_json(js);
                 })
+            .def("to_json_str",
+                [](maz::doc::document& doc) -> std::string {
+                    return doc.to_json_str();
+                })
             .def("info_env", &maz::doc::document::info_env)
             .def("last_page", py::overload_cast<>(&maz::doc::document::last_page, py::const_), py::return_value_policy::reference)
         ;
