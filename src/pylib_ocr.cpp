@@ -43,7 +43,7 @@ namespace maz {
 
         m.def(
             "ocr_line",
-            [](maz::ocr::engine& engine, maz::ia::image& img, bool raw = false) {
+            [](maz::ocr::engine& engine, maz::ia::image& img, bool raw) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
                 std::string s = maz::ocr::ocr_line(engine, runstats, words, img, raw);
@@ -53,7 +53,7 @@ namespace maz {
 
         m.def(
             "reocr",
-            [](maz::ocr::engine& engine, const maz::ia::image& page_img, doc::bbox_type word_bbox, bool raw = false) {
+            [](maz::ocr::engine& engine, const maz::ia::image& page_img, doc::bbox_type word_bbox, bool raw) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
                 std::string s;
