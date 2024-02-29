@@ -8,6 +8,7 @@
 
 #include "ocr/engines.h"
 #include "ocr/processing.h"
+#include "ocr/reocr.h"
 
 namespace py = pybind11;
 
@@ -42,13 +43,45 @@ namespace maz {
 
         m.def(
             "ocr_line",
-            [](maz::ocr::engine& engine, maz::ia::image& img) {
+            [](maz::ocr::engine& engine, maz::ia::image& img, bool raw = false) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
-                std::string s = maz::ocr::ocr_line(engine, runstats, words, img);
+                std::string s = maz::ocr::ocr_line(engine, runstats, words, img, raw);
                 return make_tuple(s, words);
             },
             "OCR line image");
+
+        m.def(
+            "reocr",
+            [](maz::ocr::engine& engine, const maz::ia::image& page_img, doc::bbox_type word_bbox, bool raw = false) {
+                maz::ocr::run_stats runstats;
+                maz::doc::words_type words;
+                std::string s;
+
+                doc::ptr_word pwtmp(new doc::word_type("", {"", ""}));
+                std::list<std::string> tags;
+                bool one_simple_line = true;
+
+                std::shared_ptr<segment::word> pwi = ocr::reocr::prepare_image(
+                    page_img, word_bbox, pwtmp, tags, one_simple_line);
+                if (!pwi) return make_tuple(s, words);
+
+                s = maz::ocr::ocr_line(engine, runstats, words, *pwi, raw);
+                return make_tuple(s, words);
+            },
+            "reOCR line image");
+
+
+        m.def(
+            "ocr_word",
+            [](maz::ocr::engine& engine, maz::ia::image& img) {
+                maz::ocr::run_stats runstats;
+                maz::doc::words_type words;
+                std::string s = maz::ocr::ocr_word(engine, runstats, words, img);
+                return make_tuple(s, words);
+            },
+            "OCR word image");
+
     }
 
 } // namespace maz
