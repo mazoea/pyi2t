@@ -399,7 +399,7 @@ class _i2t(object):
             if binarize == 'otsu':
                 img.binarize_otsu()
         with perf_probe('ocr_line'):
-            s, words_arr = self._impl.ocr_line(engine, img)
+            s, words_arr = self._impl.ocr_line(engine, img, False)
         return s, words_arr
 
 
