@@ -31,7 +31,7 @@ namespace maz {
         // ============
 
         py::class_<serial::i_to_json_dict>(m, "i_to_json_dict")
-            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("full") = false, py::arg("indent") = -1)
+            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("full") = false, py::arg("indent") = -1);
 
 
 
