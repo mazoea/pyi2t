@@ -261,11 +261,15 @@ class _i2t(object):
     @perf_method()
     def ocr_line_v3(self, file_str_or_np_img_or_pyimg, binarize=None):
         args = self.image_wrapper(file_str_or_np_img_or_pyimg)
-        return self._ocr_line_from_file(args.img, self.t3, binarize=binarize)
+        return self._ocr_line(args.img, self.t3, binarize=binarize)
 
     def ocr_line_v4(self, file_str_or_np_img_or_pyimg, binarize=None):
         args = self.image_wrapper(file_str_or_np_img_or_pyimg)
-        return self._ocr_line_from_file(args.img, self.t4, binarize=binarize)
+        return self._ocr_line(args.img, self.t4, binarize=binarize)
+
+    def reocr_v4(self, i2t_page_img, i2t_bbox, raw=False):
+        return self._reocr(i2t_page_img, i2t_bbox, self.t4, raw)
+
 
     # =============
 
@@ -394,12 +398,17 @@ class _i2t(object):
 
     # =============
 
-    def _ocr_line_from_file(self, img, engine, binarize):
+    def _ocr_line(self, img, engine, binarize):
         with perf_probe('binarize'):
             if binarize == 'otsu':
                 img.binarize_otsu()
         with perf_probe('ocr_line'):
             s, words_arr = self._impl.ocr_line(engine, img, False)
+        return s, words_arr
+
+    def _reocr(self, i2t_page_img, i2t_bbox, engine, raw=False):
+        with perf_probe('reocr'):
+            s, words_arr = self._impl.reocr(engine, i2t_page_img, i2t_bbox, raw)
         return s, words_arr
 
 
