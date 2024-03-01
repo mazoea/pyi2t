@@ -46,7 +46,7 @@ namespace maz {
             [](maz::ocr::engine& engine, maz::ia::image& img, bool raw) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
-                std::string s = maz::ocr::ocr_line(engine, runstats, words, img, raw);
+                std::string s = maz::ocr::ocr_line(engine, runstats, words, img);
                 return make_tuple(s, words);
             },
             "OCR line image");
