@@ -31,7 +31,7 @@ namespace maz {
         // ============
 
         py::class_<serial::i_to_json_dict>(m, "i_to_json_dict")
-            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("indent") = -1);
+            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("full") = false, py::arg("indent") = -1)
 
 
 
@@ -68,6 +68,7 @@ namespace maz {
             .def_readwrite("from_dict", &maz::doc::word_detail_type::from_dict)
             .def_readwrite("baseline", &maz::doc::word_detail_type::baseline)
             .def_readwrite("warnings", &maz::doc::word_detail_type::warnings)
+            .def_readwrite("info", &maz::doc::word_detail_type::info)
         ;
 
         py::class_<maz::doc::word_type, std::shared_ptr<maz::doc::word_type>>(m, "word")
@@ -76,7 +77,7 @@ namespace maz {
             .def_readwrite("bbox", &maz::doc::base_element::bbox)
             .def_readwrite("text", &maz::doc::base_element::text)
             .def("conf", py::overload_cast<>(&maz::doc::base_element::conf, py::const_))
-            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("indent") = -1)
+            .def("to_json_str", &serial::i_to_json_dict::to_json_str, py::arg("full") = false, py::arg("indent") = -1)
             .def_readwrite("detail", &maz::doc::word_type::detail)
         ;
 
