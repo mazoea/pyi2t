@@ -46,7 +46,7 @@ namespace maz {
             [](maz::ocr::engine& engine, maz::ia::image& img, bool raw) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
-                std::string s = maz::ocr::ocr_line(engine, runstats, words, img);
+                std::string s = maz::ocr::ocr_line(engine, runstats, words, img, "pyocr:ocr_line");
                 return make_tuple(s, words);
             },
             "OCR line image");
@@ -66,7 +66,7 @@ namespace maz {
                     page_img, word_bbox, pwtmp, tags, one_simple_line);
                 if (!pwi) return make_tuple(s, words);
 
-                s = maz::ocr::ocr_line(engine, runstats, words, *pwi, raw);
+                s = maz::ocr::ocr_line(engine, runstats, words, *pwi, "pyocr:reocr", raw);
                 return make_tuple(s, words);
             },
             "reOCR line image");
@@ -77,7 +77,7 @@ namespace maz {
             [](maz::ocr::engine& engine, maz::ia::image& img) {
                 maz::ocr::run_stats runstats;
                 maz::doc::words_type words;
-                std::string s = maz::ocr::ocr_word(engine, runstats, words, img);
+                std::string s = maz::ocr::ocr_word(engine, runstats, words, img, "pyocr:ocr_word");
                 return make_tuple(s, words);
             },
             "OCR word image");
