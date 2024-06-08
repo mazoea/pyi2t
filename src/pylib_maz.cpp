@@ -105,6 +105,9 @@ namespace maz {
                 if (!page.ia_elems().has(key)) return {};
                 return page.ia_elems().get(key)->bboxes();
             })
+            .def("features", [](maz::doc::page_type& page) -> std::list<std::string> {
+                return page.features();
+            })
             .def("info_val", [](maz::doc::page_type& page, const std::string& k) -> std::string {
                 return page.get_info(k).dump();
             })

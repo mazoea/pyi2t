@@ -103,6 +103,7 @@ namespace maz {
             .def("valid", &maz::forms::ib::line::valid)
             .def("bbox", py::overload_cast<>(&maz::forms::ib::line::bbox, py::const_))
             .def("str", &maz::forms::ib::line::str)
+            .def("origin", [](maz::forms::ib::line& l) -> std::string { return l.origin(); })
         ;
 
         py::class_<maz::forms::ib::lines>(m, "lines")
