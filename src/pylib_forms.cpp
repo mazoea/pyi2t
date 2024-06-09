@@ -39,6 +39,9 @@ namespace maz {
             .def("process", &maz::ml::classify::ib_form::process)
             .def("type", &maz::ml::classify::ib_form::type)
             .def("get_ib_section", &maz::ml::classify::ib_form::get_ib_section)
+            .def("component_info", [](maz::ml::classify::ib_form& self) -> std::list<std::string> {
+                    return self.components_info();
+                })
             .def("json_features_s", [](maz::ml::classify::ib_form& self) -> std::string {
                 return self.to_json(serial::normal).dump(0);
             });
