@@ -43,7 +43,8 @@ namespace maz {
                     return self.components_info();
                 })
             .def("json_features_s", [](maz::ml::classify::ib_form& self) -> std::string {
-                return self.to_json(serial::normal).dump(0);
+                // call features::to_json
+                return self.features::to_json(serial::normal).dump(0);
             });
 
         py::class_<maz::forms::ib::page_segments_detector>(m, "ib_page_segments_detector")
