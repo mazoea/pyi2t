@@ -82,6 +82,16 @@ namespace maz {
             },
             "OCR word image");
 
+        m.def(
+            "ocr_block",
+            [](maz::ocr::engine& engine, maz::ia::image& img) {
+                maz::ocr::run_stats runstats;
+                maz::doc::words_type words;
+                std::string s = maz::ocr::ocr_block(engine, runstats, words, img, "pyocr:ocr_block");
+                return make_tuple(s, words);
+            },
+            "OCR block image");
+
     }
 
 } // namespace maz
