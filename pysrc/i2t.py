@@ -310,6 +310,15 @@ class _i2t(object):
         """
         self._impl.ml_ib_form_prepare(doc)
 
+    def ub_classify_form(self, doc, img):
+        """
+        : param js_str:
+        : param i2t.image
+        : return: res_form
+        """
+        return self._impl.classify_form(doc, img)
+    
+
     # =============
 
     def load_doc(self, js_str):

@@ -62,7 +62,7 @@ namespace maz {
 
         m.def(
             "classify_form",
-            [](maz::doc::document& doc,  const maz::ia::image& imgb) -> maz::forms::ub::form
+            [](const maz::doc::document& doc,  const maz::ia::image& imgb) -> maz::forms::ub::form
             {
                 return maz::forms::ub::classify_form(doc, imgb);
             },
