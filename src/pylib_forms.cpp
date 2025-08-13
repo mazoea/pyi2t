@@ -10,6 +10,7 @@
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
+#include "forms/ub/form_ub04.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
 
@@ -58,6 +59,14 @@ namespace maz {
                 maz::ml::classify::ib_form::reformat(doc);
             },
             "Prepare document for feature extraction");
+
+        m.def(
+            "classify_form",
+            [](maz::doc::document& doc,  const maz::ia::image& imgb) -> maz::forms::ub::form
+            {
+                return maz::forms::ub::classify_form(doc, imgb);
+            },
+            "Classify a form as UB with IB");
 
         // ============
 
