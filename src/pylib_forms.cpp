@@ -60,6 +60,12 @@ namespace maz {
             },
             "Prepare document for feature extraction");
 
+        py::class_<maz::forms::ub::form>(m, "form")
+            .def(py::init<>())
+            .def_readwrite("type", &maz::forms::ub::form::type)
+            .def_readwrite("bill_type", &maz::forms::ub::form::bill_type)
+            .def_readwrite("ib_section", &maz::forms::ub::form::ib_section);
+
         m.def(
             "classify_form",
             [](const maz::doc::document& doc,  const maz::ia::image& imgb) -> maz::forms::ub::form
