@@ -11,6 +11,7 @@
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
 #include "forms/ub/form_ub04.h"
+#include "forms/ib/ub_checker.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
 
@@ -133,6 +134,16 @@ namespace maz {
             }, py::return_value_policy::reference_internal)
             .def("all_size", &maz::forms::ib::lines::all_size)
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
+        ;
+
+        py::class_<maz::forms::ib::ub_with_ib_parse> ub_ib_report (m, "ub_ib_report");
+        ub_ib_report.def(py::init<maz::doc::document&>())
+            .def("is", maz::forms::ib::ub_with_ib_parse::is)
+            .def("parse", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
+                {
+                    auto preport = ub_ib_report.report();
+                    return preport->items();
+                })
         ;
 
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");

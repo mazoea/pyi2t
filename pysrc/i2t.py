@@ -372,6 +372,9 @@ class _i2t(object):
     def create_bbox(self, xlt, ylt, xrb, yrb):
         return self._impl.bbox_type(xlt, ylt, xrb, yrb)
 
+    def create_ub_ib_report(self, doc)
+        return self._impl.ub_ib_report(doc)
+
     # =============
 
     def ia_lines(self, imgb, letter_h, dbg=''):
