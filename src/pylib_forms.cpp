@@ -69,9 +69,9 @@ namespace maz {
 
         m.def(
             "classify_form",
-            [](const maz::doc::document& doc,  const maz::ia::image& imgb) -> maz::forms::ub::form
+            [](const maz::doc::document& doc,  const maz::ia::image& imgb, std::string ub04_templ) -> maz::forms::ub::form
             {
-                return maz::forms::ub::classify_form(doc, imgb);
+                return maz::forms::ub::classify_form(doc, imgb, ub04_templ);
             },
             "Classify a form as UB with IB");
 
