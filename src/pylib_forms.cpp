@@ -138,8 +138,10 @@ namespace maz {
 
         py::class_<maz::forms::ib::ub_with_ib_parse> ub_ib_report (m, "ub_ib_report");
         ub_ib_report.def(py::init<maz::doc::document&>())
-            .def("is_report", maz::forms::ib::ub_with_ib_parse::is)
-            .def("parse", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
+            .def("is_report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report) -> bool {
+                    return ub_ib_report.maz::forms::ib::ub_with_ib_parse::is();
+                })
+            .def("report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
                 {
                     auto preport = ub_ib_report.report();
                     return preport->items();
