@@ -316,7 +316,8 @@ class _i2t(object):
         : param i2t.image
         : return: res_form
         """
-        return self._impl.classify_form(doc, img)
+        ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
+        return self._impl.classify_form(doc, img, ub_templ)
     
 
     # =============
