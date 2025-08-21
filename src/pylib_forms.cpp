@@ -66,6 +66,8 @@ namespace maz {
             .def_readwrite("type", &maz::forms::ub::form::type)
             .def_readwrite("bill_type", &maz::forms::ub::form::bill_type)
             .def_readwrite("ib_section", &maz::forms::ub::form::ib_section);
+            .def_readwrite("customer", &maz::forms::ub::form::customer);
+            .def_readwrite("dbg", &maz::forms::ub::form::dbg);
 
         m.def(
             "classify_form",
