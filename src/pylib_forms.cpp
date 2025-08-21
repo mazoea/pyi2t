@@ -10,6 +10,8 @@
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
+#include "forms/ub/form_ub04.h"
+#include "forms/ib/ub_checker.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
 
@@ -58,6 +60,22 @@ namespace maz {
                 maz::ml::classify::ib_form::reformat(doc);
             },
             "Prepare document for feature extraction");
+
+        py::class_<maz::forms::ub::form>(m, "form")
+            .def(py::init<>())
+            .def_readwrite("type", &maz::forms::ub::form::type)
+            .def_readwrite("bill_type", &maz::forms::ub::form::bill_type)
+            .def_readwrite("ib_section", &maz::forms::ub::form::ib_section)
+            .def_readwrite("customer", &maz::forms::ub::form::customer)
+            .def_readwrite("dbg", &maz::forms::ub::form::dbg);
+
+        m.def(
+            "classify_form",
+            [](const maz::doc::document& doc,  const maz::ia::image& imgb, std::string ub04_templ) -> maz::forms::ub::form
+            {
+                return maz::forms::ub::classify_form(doc, imgb, ub04_templ);
+            },
+            "Classify a form as UB with IB");
 
         // ============
 
@@ -118,6 +136,18 @@ namespace maz {
             }, py::return_value_policy::reference_internal)
             .def("all_size", &maz::forms::ib::lines::all_size)
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
+        ;
+
+        py::class_<maz::forms::ib::ub_with_ib_parse> ub_ib_report (m, "ub_ib_report");
+        ub_ib_report.def(py::init<maz::doc::document&>())
+            .def("is_report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report) -> bool {
+                    return ub_ib_report.maz::forms::ib::ub_with_ib_parse::is();
+                })
+            .def("report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
+                {
+                    auto preport = ub_ib_report.report();
+                    return preport->items();
+                })
         ;
 
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");

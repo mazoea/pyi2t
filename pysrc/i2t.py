@@ -310,6 +310,16 @@ class _i2t(object):
         """
         self._impl.ml_ib_form_prepare(doc)
 
+    def ub_classify_form(self, doc, img):
+        """
+        : param js_str:
+        : param i2t.image
+        : return: res_form
+        """
+        ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
+        return self._impl.classify_form(doc, img, ub_templ)
+    
+
     # =============
 
     def load_doc(self, js_str):
@@ -362,6 +372,9 @@ class _i2t(object):
 
     def create_bbox(self, xlt, ylt, xrb, yrb):
         return self._impl.bbox_type(xlt, ylt, xrb, yrb)
+
+    def create_ub_ib_report(self, doc):
+        return self._impl.ub_ib_report(doc)
 
     # =============
 
