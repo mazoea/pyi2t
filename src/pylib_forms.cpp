@@ -59,6 +59,27 @@ namespace maz {
             },
             "Prepare document for feature extraction");
 
+        //py::class_<maz::forms::ub::ub04>(m, "ub04_form")
+        //    .def(py::init<ia::image&>())
+        //    .def("valid", &maz::forms::ub::ub04::valid)
+        //    .def("bbox", &maz::forms::ub::ub04::bbox)
+
+
+            //.def_readwrite("type", &maz::forms::ub::form::type)
+            //.def_readwrite("bill_type", &maz::forms::ub::form::bill_type)
+            //.def_readwrite("ib_section", &maz::forms::ub::form::ib_section)
+            //.def_readwrite("customer", &maz::forms::ub::form::customer)
+            //.def_readwrite("dbg", &maz::forms::ub::form::dbg)
+            //;
+
+        //m.def(
+        //    "classify_form",
+        //    [](const maz::doc::document& doc, const maz::ia::image& imgb, std::string ub04_templ) -> maz::forms::ub::form
+        //    {
+        //        return maz::forms::ub::classify_form(doc, imgb, ub04_templ);
+        //    },
+        //    "Classify a form as UB with IB");
+
         // ============
 
         py::class_<maz::forms::ib::col_feats>(m, "ib_col_feats")
@@ -120,6 +141,18 @@ namespace maz {
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
         ;
 
+        //py::class_<maz::forms::ib::ub_with_ib_parse> ub_ib_report (m, "ub_ib_report");
+        //ub_ib_report.def(py::init<maz::doc::document&>())
+        //    .def("is_report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report) -> bool {
+        //            return ub_ib_report.maz::forms::ib::ub_with_ib_parse::is();
+        //        })
+        //    .def("report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
+        //        {
+        //            auto preport = ub_ib_report.report();
+        //            return preport->items();
+        //        })
+        //;
+        
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");
         preport.def("find_columns", &maz::forms::ib::report::find_columns)
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
