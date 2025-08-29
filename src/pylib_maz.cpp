@@ -161,6 +161,7 @@ namespace maz {
                     return doc.to_json_str();
                 })
             .def("info_env", &maz::doc::document::info_env)
+            .def("page_len", &maz::doc::document::page_count)
             .def("last_page", py::overload_cast<>(&maz::doc::document::last_page, py::const_), py::return_value_policy::reference)
         ;
 

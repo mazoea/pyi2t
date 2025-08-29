@@ -10,6 +10,8 @@
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
+#include "forms/ib/ub_checker.h"
+#include "forms/ub/form_ub04.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
 
@@ -59,26 +61,38 @@ namespace maz {
             },
             "Prepare document for feature extraction");
 
-        //py::class_<maz::forms::ub::ub04>(m, "ub04_form")
-        //    .def(py::init<ia::image&>())
-        //    .def("valid", &maz::forms::ub::ub04::valid)
-        //    .def("bbox", &maz::forms::ub::ub04::bbox)
+        py::class_<maz::forms::ub::ub04>(m, "ub04_form")
+            .def(py::init<const ia::image&, const std::string&>(),
+                     py::arg("img"),
+                     py::arg("dbg") = "",
+                     "Create UB04 form from image")
+            .def("valid", &maz::forms::ub::ub04::valid)
+            .def("bbox", &maz::forms::ub::ub04::bbox)
+            .def_static("classify", &maz::forms::ub::ub04::classify,
+                py::arg("img"),
+                py::arg("template_path"),
+                py::arg("process_img") = true,
+                py::arg("dbg") = "",
+                "Classify UB04 form from image",
+                py::return_value_policy::copy)
+            .def("bill_type", &maz::forms::ub::ub04::bill_type)
+            .def("customer", &maz::forms::ub::ub04::customer)
+            .def("dbg_info", &maz::forms::ub::ub04::dbg_info)
+            ;
 
-
-            //.def_readwrite("type", &maz::forms::ub::form::type)
-            //.def_readwrite("bill_type", &maz::forms::ub::form::bill_type)
-            //.def_readwrite("ib_section", &maz::forms::ub::form::ib_section)
-            //.def_readwrite("customer", &maz::forms::ub::form::customer)
-            //.def_readwrite("dbg", &maz::forms::ub::form::dbg)
-            //;
-
-        //m.def(
-        //    "classify_form",
-        //    [](const maz::doc::document& doc, const maz::ia::image& imgb, std::string ub04_templ) -> maz::forms::ub::form
-        //    {
-        //        return maz::forms::ub::classify_form(doc, imgb, ub04_templ);
-        //    },
-        //    "Classify a form as UB with IB");
+        m.def(
+            "classify_ib_in_ub",
+            [](const maz::doc::page_type& p, std::shared_ptr<maz::forms::ub::ub04> pform, const std::string& dbg = {}) -> bool
+            {
+                using namespace maz::forms::ib;
+                ib_in_ub_classifier cls(p, pform, dbg);
+                
+                // TODO(jm) what about non UB form types?
+                if (cls.tp() != ib_in_ub_classifier::type::extractable) return false;
+                
+                return true;
+            },
+            "Classify a form as UB with IB");
 
         // ============
 
