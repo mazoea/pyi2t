@@ -88,7 +88,7 @@ namespace maz {
                 ib_in_ub_classifier cls(p, pform, dbg);
                 
                 // TODO(jm) what about non UB form types?
-                if (cls.tp() != ib_in_ub_classifier::type::extractable) return false;
+                if (cls.tp() != ib_in_ub_classifier::type::extract) return false;
                 
                 return true;
             },
