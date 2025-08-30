@@ -291,32 +291,68 @@ class _i2t(object):
 
     def is_ib_form(self, page):
         """
+            :return: True/False, str, bbox/None
 
-        :return: True/False, str, bbox/None
+            In i2t, `ml_ib_form` (`ml::classify::ib_form`) is called from `classify_form` in
+            `::ocr` and `::reocr` stages. The classifier is serialized into `page.info["ib:classify"]`
+            and contains:
+                * type - str (no, report, invalid)
+                * features - dict
+                * ib_section - bbox
         """
         ibf = self._impl.ml_ib_form(self._dirs.configs)
         ibf.process(page)
         doc_tp = ibf.type()
         is_ib = doc_tp.is_ib()
-        type_str = doc_tp.str()
         ib_bbox = ibf.get_ib_section() if is_ib else None
         features = ibf.json_features_s()
-        return is_ib, type_str, ib_bbox, features
+        try:
+            features = json.loads(features)
+        except Exception:
+            pass
+        type_s = doc_tp.str()  # no, report, invalid
+        if type_s == "report":
+            type_s = "IB"
+
+        d = {
+            "valid": True,
+            "type": type_s,
+            "ib_section": ib_bbox,
+            "features": features,
+        }
+        return is_ib, d
 
     def ml_ib_form_prepare(self, doc):
-        """
-        :param js_str:
-        :return:
-        """
         self._impl.ml_ib_form_prepare(doc)
+
+    def is_ib_in_ub_form(self, page, img):
+        pyi2t_img = self.image_wrapper(img)
+        ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
+        ubf = self._impl.ub04_form.classify(pyi2t_img, ub_templ)
+        d = {
+            "valid": ubf.valid(),
+            "type": "no",
+            "ib_section": None,
+            "valid_perc": ubf.valid_perc(),
+            "ub_bbox": ubf.bbox(),
+            "customer": ubf.customer(),
+            "bill_type": ubf.bill_type(),
+            "dbg": ubf.dbg_info()
+        }
+        if not ubf.valid():
+            return False, d
+
+        is_ib = self._impl.classify_ib_in_ub(page, ubf)
+        d["type"] = "IB" if is_ib else "no"
+        d["ib_section"] = ubf.line_section()
+        d["dbg"] = ubf.dbg_info()
+        return is_ib, d
 
     # =============
 
     def load_doc(self, js_str):
         """
             Load document representation from a json string.
-        :param js_str:
-        :return:
         """
         env = self._impl.env()
         doc = self._impl.document(env)
@@ -328,7 +364,6 @@ class _i2t(object):
     def create_grid_info(self, page, hlines=None, vlines=None):
         """
             Create gridline object using hlines/vlines information on a page.
-        :return:
         """
         hlines = page.hlines() if hlines is None else hlines
         vlines = page.vlines() if vlines is None else vlines
@@ -337,19 +372,12 @@ class _i2t(object):
     def create_grid_rows(self, gridcells):
         """
             Create grid rows using GridFinder
-        :param gridcells:
-        :return:
         """
         return self._impl.la_gridrows(gridcells)
 
     def create_report(self, doc, cols, grid, imgb, dbg=''):
         """
             Create IB report object
-        :param doc:
-        :param pcols:
-        :param pgrid:
-        :param tmpl_path:
-        :return:
         """
         tmpl_path = os.path.join(self._dirs.configs, 'ib-template.json')
         return self._impl.create_report(doc, cols, grid, tmpl_path, imgb, dbg=dbg)
