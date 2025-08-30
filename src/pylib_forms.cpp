@@ -75,6 +75,7 @@ namespace maz {
                 py::arg("dbg") = "",
                 "Classify UB04 form from image",
                 py::return_value_policy::copy)
+            .def("line_section", &maz::forms::ub::ub04::line_section)
             .def("bill_type", &maz::forms::ub::ub04::bill_type)
             .def("customer", &maz::forms::ub::ub04::customer)
             .def("dbg_info", &maz::forms::ub::ub04::dbg_info)
