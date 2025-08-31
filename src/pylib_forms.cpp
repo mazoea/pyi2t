@@ -11,6 +11,7 @@
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
 #include "forms/ib/ub_checker.h"
+#include "forms/ib/ub_parser.h"
 #include "forms/ub/form_ub04.h"
 #include "ml/forms.h"
 #include "segment/ocr/form_ib.h"
@@ -149,24 +150,23 @@ namespace maz {
         py::class_<maz::forms::ib::lines>(m, "lines")
             .def("__len__", &maz::forms::ib::lines::size)
             .def("__getitem__", [](const maz::forms::ib::lines& ib_lines, size_t i) ->maz::forms::ib::line {
-            if (i >= ib_lines.size()) throw py::index_error();
-                return *std::next(ib_lines.begin(), i);
-            }, py::return_value_policy::reference_internal)
+                if (i >= ib_lines.size()) throw py::index_error();
+                    return *std::next(ib_lines.begin(), i);
+                }, py::return_value_policy::reference_internal)
             .def("all_size", &maz::forms::ib::lines::all_size)
             .def("ignored_size", &maz::forms::ib::lines::ignored_size)
         ;
 
-        //py::class_<maz::forms::ib::ub_with_ib_parse> ub_ib_report (m, "ub_ib_report");
-        //ub_ib_report.def(py::init<maz::doc::document&>())
-        //    .def("is_report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report) -> bool {
-        //            return ub_ib_report.maz::forms::ib::ub_with_ib_parse::is();
-        //        })
-        //    .def("report", [](maz::forms::ib::ub_with_ib_parse& ub_ib_report)
-        //        {
-        //            auto preport = ub_ib_report.report();
-        //            return preport->items();
-        //        })
-        //;
+        py::class_<maz::forms::ib::ub_parser>(m, "ub_parser")
+            .def(py::init<maz::doc::document&>())
+            .def("is", &maz::forms::ib::ub_parser::is)
+            .def("report", &maz::forms::ib::ub_parser::report)
+            .def("parse", 
+                py::overload_cast<>(&maz::forms::ib::ub_parser::parse),
+                "Parse IB lines",
+                py::return_value_policy::copy
+            )
+        ;
         
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");
         preport.def("find_columns", &maz::forms::ib::report::find_columns)
