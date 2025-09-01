@@ -6,6 +6,7 @@
 #undef HAVE_FSTATAT
 #endif
 
+#include "arguments.h"
 #include "forms/ib/columns_text.h"
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
@@ -14,6 +15,7 @@
 #include "forms/ib/ub_parser.h"
 #include "forms/ub/form_ub04.h"
 #include "ml/forms.h"
+#include "ocr/processing.h"
 #include "segment/ocr/form_ib.h"
 
 namespace py = pybind11;
@@ -69,11 +71,37 @@ namespace maz {
                      "Create UB04 form from image")
             .def("valid", &maz::forms::ub::ub04::valid)
             .def("bbox", &maz::forms::ub::ub04::bbox)
-            .def_static("classify", &maz::forms::ub::ub04::classify,
-                py::arg("img"),
-                py::arg("template_path"),
-                py::arg("process_img") = true,
-                py::arg("dbg") = "",
+            .def_static("classify", [](const ia::image& img,
+                const std::string& template_path,
+                bool process_img,
+                const std::string& dbg = {}) -> std::shared_ptr<maz::forms::ub::ub04> 
+                {
+                    ia::ptr_image pimg;
+
+                    if (process_img)
+                    {
+                        env_type env;
+                        maz::enable_image_operations(env);
+                        maz::update_to_defaults(env);
+                        env["img-dark-regions"] = ARG_FALSE;
+
+                        doc::document doc_tmp(env, "");
+                        ia::image_variants doc_images;
+                        ia::image img_tmp(img.copy());
+
+                        ia::image_properties img_props =
+                            maz::ocr::prepare_image_for_ocr(doc_tmp, env, doc_images, img_tmp, false);
+                        pimg = doc_images.no_stickers_1bpp();
+                    }
+                    else
+                    {
+                        pimg = ia::ptr_image(new ia::image(img.copy()));
+                    }
+
+                    if (!pimg) return nullptr;
+                  
+                    return maz::forms::ub::ub04::classify(*pimg, template_path, dbg);
+                },
                 "Classify UB04 form from image",
                 py::return_value_policy::copy)
             .def("line_section", &maz::forms::ub::ub04::line_section)
