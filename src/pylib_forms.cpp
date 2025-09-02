@@ -107,7 +107,10 @@ namespace maz {
             .def("line_section", &maz::forms::ub::ub04::line_section)
             .def("bill_type", &maz::forms::ub::ub04::bill_type)
             .def("customer", &maz::forms::ub::ub04::customer)
-            .def("dbg_info", &maz::forms::ub::ub04::dbg_info)
+            .def("dbg_info_str", [](maz::forms::ub::ub04& self) 
+                { 
+                    return maz::join(self.dbg_info().begin(), self.dbg_info().end(), ","); 
+                })
             ;
 
         m.def(
