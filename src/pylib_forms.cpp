@@ -189,7 +189,7 @@ namespace maz {
         ;
 
         py::class_<maz::forms::ib::ub_parser>(m, "ub_parser")
-            .def(py::init<maz::doc::document&>())
+            .def(py::init<maz::doc::document&, const bbox_type&>())
             .def("is", &maz::forms::ib::ub_parser::is)
             .def("report", &maz::forms::ib::ub_parser::report)
             .def("parse", 
