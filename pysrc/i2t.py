@@ -330,24 +330,25 @@ class _i2t(object):
         process_img = True if isinstance(img, str) else False
         pyi2t_img = self.image_wrapper(img)
         ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
-        ubf = self._impl.ub04_form.classify(pyi2t_img.img, ub_templ, process_img, "")
+        ubf = self._impl.ub04_form.classify(pyi2t_img.img, ub_templ, process_img)
         d = {
             "valid": ubf.valid(),
             "type": "no",
             "ib_section": None,
             # "valid_perc": ubf.valid_perc(),
-            # "ub_bbox": i2t2bbox(ubf.bbox()),
-            "customer": ubf.customer(),
-            "bill_type": ubf.bill_type(),
-            "dbg": ubf.dbg_info()
+            #"ub_bbox": ubf.bbox(),
+            "dbg": ubf.dbg_info_str()
         }
         if not ubf.valid():
             return False, d
 
         is_ib = self._impl.classify_ib_in_ub(page, ubf)
         d["type"] = "IB" if is_ib else "no"
+        d["customer"]: ubf.customer()
+        d["bill_type"]: ubf.bill_type()
         d["ib_section"] = ubf.line_section()
         d["dbg"] = ubf.dbg_info_str()
+
         return is_ib, d
 
     # =============
