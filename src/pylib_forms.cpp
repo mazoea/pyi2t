@@ -64,7 +64,7 @@ namespace maz {
             },
             "Prepare document for feature extraction");
 
-        py::class_<maz::forms::ub::ub04>(m, "ub04_form")
+        py::class_<maz::forms::ub::ub04, std::shared_ptr<maz::forms::ub::ub04>>(m, "ub04_form")
             .def(py::init<const ia::image&, const std::string&>(),
                      py::arg("img"),
                      py::arg("dbg") = "",
@@ -73,8 +73,7 @@ namespace maz {
             .def("bbox", &maz::forms::ub::ub04::bbox)
             .def_static("classify", [](const ia::image& img,
                 const std::string& template_path,
-                bool process_img,
-                const std::string& dbg = {}) -> std::shared_ptr<maz::forms::ub::ub04> 
+                bool process_img) -> std::shared_ptr<maz::forms::ub::ub04> 
                 {
                     ia::ptr_image pimg;
 
@@ -100,7 +99,7 @@ namespace maz {
 
                     if (!pimg) return nullptr;
                   
-                    return maz::forms::ub::ub04::classify(*pimg, template_path, dbg);
+                    return maz::forms::ub::ub04::classify(*pimg, template_path);
                 },
                 "Classify UB04 form from image",
                 py::return_value_policy::copy)
@@ -109,16 +108,17 @@ namespace maz {
             .def("customer", &maz::forms::ub::ub04::customer)
             .def("dbg_info_str", [](maz::forms::ub::ub04& self) 
                 { 
-                    return maz::join(self.dbg_info().begin(), self.dbg_info().end(), ","); 
+                    std::list<std::string> dbg_info = self.dbg_info();
+                    return maz::join(dbg_info.begin(), dbg_info.end(), ","); 
                 })
             ;
 
         m.def(
             "classify_ib_in_ub",
-            [](const maz::doc::page_type& p, std::shared_ptr<maz::forms::ub::ub04> pform, const std::string& dbg = {}) -> bool
+            [](const maz::doc::page_type& p, std::shared_ptr<maz::forms::ub::ub04> pform) -> bool
             {
                 using namespace maz::forms::ib;
-                ib_in_ub_classifier cls(p, pform, dbg);
+                ib_in_ub_classifier cls(p, pform); 
                 
                 // TODO(jm) what about non UB form types?
                 if (cls.tp() != ib_in_ub_classifier::type::extract) return false;
