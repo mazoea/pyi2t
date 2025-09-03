@@ -289,7 +289,7 @@ class _i2t(object):
 
     # =============
 
-    def is_ib_form(self, page):
+    def is_ib_form(self, page, trans_bbox):
         """
             :return: True/False, str, bbox/None
 
@@ -317,7 +317,7 @@ class _i2t(object):
         d = {
             "valid": True,
             "type": type_s,
-            "ib_section": ib_bbox,
+            "ib_section": trans_bbox(ib_bbox),
             "features": features,
         }
         return is_ib, d
@@ -325,7 +325,7 @@ class _i2t(object):
     def ml_ib_form_prepare(self, doc):
         self._impl.ml_ib_form_prepare(doc)
 
-    def is_ib_in_ub_form(self, page, img):
+    def is_ib_in_ub_form(self, page, img, trans_bbox):
         # TODO TM hack, that image need to process, if it is not from i2t
         process_img = True if isinstance(img, str) else False
         pyi2t_img = self.image_wrapper(img)
@@ -346,7 +346,7 @@ class _i2t(object):
         d["type"] = "IB" if is_ib else "no"
         d["customer"]: ubf.customer()
         d["bill_type"]: ubf.bill_type()
-        d["ib_section"] = ubf.line_section()
+        d["ib_section"] = trans_bbox(ubf.line_section())
         d["dbg"] = ubf.dbg_info_str()
 
         return is_ib, d
