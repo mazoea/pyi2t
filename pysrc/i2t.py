@@ -325,8 +325,9 @@ class _i2t(object):
     def ml_ib_form_prepare(self, doc):
         self._impl.ml_ib_form_prepare(doc)
 
-    def is_ib_in_ub_form(self, page, img):
+    def is_ib_in_ub_form(self, page, img, is_ib):
         """
+            TODO how to handle three possible option which can be return from ub04_form.classify() with is_ib?
             :return: True/False, dict with following keys with i2t bboxes: ib_section(can be also None)
         """
         # TODO TM hack, that image need to process, if it is not from i2t
