@@ -347,8 +347,8 @@ class _i2t(object):
 
         is_ib = self._impl.classify_ib_in_ub(page, ubf)
         d["type"] = "IB" if is_ib else "no"
-        d["customer"]: ubf.customer()
-        d["bill_type"]: ubf.bill_type()
+        d["customer"] = ubf.customer()
+        d["bill_type"] = ubf.bill_type()
         d["ib_section"] = ubf.line_section()
         d["dbg"] = ubf.dbg_info_str()
 
