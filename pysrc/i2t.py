@@ -146,6 +146,11 @@ class _img(object):
             self._img = m._impl.image(img)
             return
 
+        if (isinstance(img, dict) and
+                img['base64'] and img['mimetype'] == 'image/png'):
+            self._img = m.create_image_from_png(img['base64'])
+            return
+
         # faster than `np_to_png_base64`
         self._file_str = np_2_file(img)
         self._img = m._impl.image(self._file_str)
@@ -325,35 +330,52 @@ class _i2t(object):
     def ml_ib_form_prepare(self, doc):
         self._impl.ml_ib_form_prepare(doc)
 
-    def is_ib_in_ub_form(self, page, img, is_ib):
+    def is_ib_in_ub_form(self, page, img_path_or_d, is_ib: bool):
         """
-            TODO how to handle three possible option which can be return from ub04_form.classify() with is_ib?
             :return: True/False, dict with following keys with i2t bboxes: ib_section(can be also None)
         """
-        # TODO TM hack, that image need to process, if it is not from i2t
-        process_img = True if isinstance(img, str) else False
-        pyi2t_img = self.image_wrapper(img)
+        process_img = True
+        pyi2t_img = self.image_wrapper(img_path_or_d)
         ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
         ubf = self._impl.ub04_form.classify(pyi2t_img.img, ub_templ, process_img)
         d = {
             "valid": ubf.valid(),
             "type": "no",
             "ib_section": None,
-            # "valid_perc": ubf.valid_perc(),
-            #"ub_bbox": ubf.bbox(),
+            "valid_perc": ubf.valid_perc(),
+            "ub_bbox": ubf.bbox(),
             "dbg": ubf.dbg_info_str()
         }
         if not ubf.valid():
             return False, d
 
-        is_ib = self._impl.classify_ib_in_ub(page, ubf)
-        d["type"] = "IB" if is_ib else "no"
+        cls_d = self._impl.classify_ib_in_ub(page, ubf)
+        d["cls_details"] = cls_d
+
+        cls_tp = cls_d["type"]
+        #
+        use_this = False
+        if is_ib:
+            if cls_tp =="unknown":
+                pass
+            elif cls_tp == "extract":
+                d["subtype"] = "UB04"
+                use_this = True
+            elif cls_tp == "ignore":
+                d["type"] = "no"
+                d["subtype"] = None
+                use_this = True
+        else:
+            if cls_tp == "extract":
+                d["type"] = "IB"
+                d["subtype"] = "UB04"
+                use_this = True
+
         d["customer"] = ubf.customer()
         d["bill_type"] = ubf.bill_type()
         d["ib_section"] = ubf.line_section()
-        d["dbg"] = ubf.dbg_info_str()
 
-        return is_ib, d
+        return use_this, d
 
     # =============
 
@@ -389,8 +411,8 @@ class _i2t(object):
         tmpl_path = os.path.join(self._dirs.configs, 'ib-template.json')
         return self._impl.create_report(doc, cols, grid, tmpl_path, imgb, dbg=dbg)
 
-    def create_image_from_png(self, image_date_base64_png):
-        return self._impl.image(image_date_base64_png, 'image/png')
+    def create_image_from_png(self, image_date_base64_png, mimetype: str = 'image/png'):
+        return self._impl.image(image_date_base64_png, mimetype)
 
     def create_image(self, file_str):
         return self._impl.image(file_str)
