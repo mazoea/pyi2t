@@ -25,6 +25,18 @@ namespace py = pybind11;
 // clang-format off
 namespace maz {
 
+    namespace {
+        py::dict js2dict(const serial::json_dict& js_d)
+        {
+            py::dict d;
+            for (auto it = js_d.begin(); it != js_d.end(); ++it)
+            {
+                d[it.key().c_str()] = it.value();
+            }
+            return d;
+        }
+    }
+
     void init_forms(py::module& m)
     {
         // ============
@@ -70,6 +82,7 @@ namespace maz {
                      py::arg("dbg") = "",
                      "Create UB04 form from image")
             .def("valid", &maz::forms::ub::ub04::valid)
+            .def("valid_perc", &maz::forms::ub::ub04::valid_perc)
             .def("bbox", &maz::forms::ub::ub04::bbox)
             .def_static("classify", [](const ia::image& img,
                 const std::string& template_path,
@@ -115,15 +128,14 @@ namespace maz {
 
         m.def(
             "classify_ib_in_ub",
-            [](const maz::doc::page_type& p, std::shared_ptr<maz::forms::ub::ub04> pform) -> bool
+            [](const maz::doc::page_type& p, std::shared_ptr<maz::forms::ub::ub04> pform) -> py::dict
             {
                 using namespace maz::forms::ib;
                 ib_in_ub_classifier cls(p, pform); 
                 
-                // TODO(jm) what about non UB form types?
-                if (cls.tp() != ib_in_ub_classifier::type::extract) return false;
-                
-                return true;
+                auto js_d = cls.to_json(serial::detail::normal);
+                py::dict res = js2dict(js_d);
+                return res;
             },
             "Classify a form as UB with IB");
 
