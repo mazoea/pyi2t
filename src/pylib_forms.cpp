@@ -26,12 +26,46 @@ namespace py = pybind11;
 namespace maz {
 
     namespace {
+        
+        // Overload for nlohmann::json
+        py::object js2object(const serial::json_impl& j)
+        {
+            if (j.is_null()) {
+                return py::none();
+            } else if (j.is_boolean()) {
+                return py::cast(j.get<bool>());
+            } else if (j.is_number_integer()) {
+                return py::cast(j.get<int64_t>());
+            } else if (j.is_number_unsigned()) {
+                return py::cast(j.get<uint64_t>());
+            } else if (j.is_number_float()) {
+                return py::cast(j.get<double>());
+            } else if (j.is_string()) {
+                return py::cast(j.get<std::string>());
+            } else if (j.is_array()) {
+                py::list list;
+                for (const auto& element : j) {
+                    list.append(js2object(element));
+                }
+                return list;
+            } else if (j.is_object()) {
+                py::dict dict;
+                for (auto it = j.begin(); it != j.end(); ++it) {
+                    dict[it.key().c_str()] = js2object(it.value());
+                }
+                return dict;
+            }
+            return py::none();
+        }
+        
         py::dict js2dict(const serial::json_dict& js_d)
         {
             py::dict d;
-            for (auto it = js_d.begin(); it != js_d.end(); ++it)
-            {
-                d[it.key().c_str()] = it.value();
+            if (js_d.is_object()) {
+                for (auto it = js_d.begin(); it != js_d.end(); ++it)
+                {
+                    d[it.key().c_str()] = js2object(it.value());
+                }
             }
             return d;
         }
