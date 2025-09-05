@@ -378,6 +378,9 @@ class _i2t(object):
 
         return use_this, d
 
+    def ub_parser(self, i2t_doc, i2t_ib_bbox):
+        return self._impl.ub_parser(i2t_doc, i2t_ib_bbox)
+
     # =============
 
     def load_doc(self, js_str):
