@@ -36,8 +36,8 @@ namespace maz {
 
         py::class_<maz::ocr::engine_manager>(m, "ocr_engine_manager")
             .def(py::init<const std::string&, const std::string&>(), py::arg("default"), py::arg("reocr"))
-            .def("ocr", &maz::ocr::engine_manager::ocr, py::return_value_policy::reference_internal)
-            .def("reocr", &maz::ocr::engine_manager::reocr, py::return_value_policy::reference_internal);
+            .def("ocr", static_cast<maz::ocr::engine&(maz::ocr::engine_manager::*)()>(&maz::ocr::engine_manager::ocr), py::return_value_policy::reference_internal)
+            .def("reocr", static_cast<maz::ocr::engine&(maz::ocr::engine_manager::*)()>(&maz::ocr::engine_manager::reocr), py::return_value_policy::reference_internal);
 
         // ============
 
