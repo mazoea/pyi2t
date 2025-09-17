@@ -129,7 +129,7 @@ namespace maz {
                         env_type env;
                         maz::enable_image_operations(env);
                         maz::update_to_defaults(env);
-                        env["img-dark-regions"] = ARG_FALSE;
+                        maz::forms::ub::ub04::update_env_for_preprocess(env);
 
                         doc::document doc_tmp(env, "");
                         ia::image_variants doc_images;
