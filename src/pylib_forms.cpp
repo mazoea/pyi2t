@@ -120,7 +120,8 @@ namespace maz {
             .def("bbox", &maz::forms::ub::ub04::bbox)
             .def_static("classify", [](const ia::image& img,
                 const std::string& template_path,
-                bool process_img) -> std::shared_ptr<maz::forms::ub::ub04> 
+                bool process_img,
+                const std::string& dbg = {}) -> std::shared_ptr<maz::forms::ub::ub04>
                 {
                     ia::ptr_image pimg;
 
@@ -129,14 +130,14 @@ namespace maz {
                         env_type env;
                         maz::enable_image_operations(env);
                         maz::update_to_defaults(env);
-                        env["img-dark-regions"] = ARG_FALSE;
+                        maz::forms::ub::ub04::update_env_for_preprocess(env);
 
                         doc::document doc_tmp(env, "");
                         ia::image_variants doc_images;
                         ia::image img_tmp(img.copy());
 
                         ia::image_properties img_props =
-                            maz::ocr::prepare_image_for_ocr(doc_tmp, env, doc_images, img_tmp, false);
+                            maz::ocr::prepare_image_for_ocr(doc_tmp, env, doc_images, img_tmp, false, nullptr, dbg);
                         pimg = doc_images.no_stickers_1bpp();
                     }
                     else
@@ -146,7 +147,7 @@ namespace maz {
 
                     if (!pimg) return nullptr;
                   
-                    return maz::forms::ub::ub04::classify(*pimg, template_path);
+                    return maz::forms::ub::ub04::classify(*pimg, template_path, dbg);
                 },
                 "Classify UB04 form from image",
                 py::return_value_policy::copy)
