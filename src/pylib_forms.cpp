@@ -118,10 +118,11 @@ namespace maz {
             .def("valid", &maz::forms::ub::ub04::valid)
             .def("valid_perc", &maz::forms::ub::ub04::valid_perc)
             .def("bbox", &maz::forms::ub::ub04::bbox)
-            .def_static("classify", [](const ia::image& img,
+            .def_static("classify",
+                [](const ia::image& img,
                 const std::string& template_path,
                 bool process_img,
-                const std::string& dbg = {}) -> std::shared_ptr<maz::forms::ub::ub04>
+                const std::string& dbg) -> std::shared_ptr<maz::forms::ub::ub04>
                 {
                     ia::ptr_image pimg;
 
@@ -149,6 +150,10 @@ namespace maz {
                   
                     return maz::forms::ub::ub04::classify(*pimg, template_path, dbg);
                 },
+                py::arg("img"),
+                py::arg("template_path"),
+                py::arg("process_img"),
+                py::arg("dbg") = "",
                 "Classify UB04 form from image",
                 py::return_value_policy::copy)
             .def("line_section", &maz::forms::ub::ub04::line_section)
