@@ -338,7 +338,7 @@ class _i2t(object):
         process_img = True
         pyi2t_img = self.image_wrapper(img_path_or_d)
         ub_templ = os.path.join(self._dirs.configs, "ub04-bbox-template.json")
-        ubf = self._impl.ub04_form.classify(pyi2t_img.img, ub_templ, process_img, "")
+        ubf = self._impl.ub04_form.classify(pyi2t_img.img, ub_templ, process_img)
         d = {
             "valid": ubf.valid(),
             "type": "no",
