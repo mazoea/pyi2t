@@ -181,7 +181,7 @@ namespace maz {
             .def("invert", &maz::ia::image::invert)
             .def("binarize_otsu", &maz::ia::image::binarize_otsu)
             .def("binarize_sauvola", &maz::ia::image::binarize_sauvola)
-            .def("clip", py::overload_cast<maz::bbox_type>(&maz::ia::image::clip, py::const_), py::return_value_policy::copy)
+            .def("clip", py::overload_cast<const maz::bbox_type&>(&maz::ia::image::clip, py::const_), py::return_value_policy::copy)
             .def("downscale2x", &maz::ia::image::downscale2x)
             .def("upscale2x", &maz::ia::image::upscale2x)
             .def("enhance", &maz::ia::image::enhance)
