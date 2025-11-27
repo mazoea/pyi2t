@@ -16,17 +16,8 @@ import base64
 _logger = logging.getLogger("i2t")
 _this_dir = os.path.dirname(os.path.abspath(__file__))
 
-PY2 = (2 == sys.version_info[0])
 
-if PY2:
-    class py23(object):
-        basestring = basestring
-else:
-    class py23(object):
-        basestring = str
-
-
-class perf_probe(object):
+class perf_probe:
     """
         Performance probe logging time it took.
     """
@@ -142,7 +133,7 @@ class _img(object):
             self._img = img
             return
 
-        if isinstance(img, py23.basestring):
+        if isinstance(img, str):
             self._img = m._impl.image(img)
             return
 
@@ -217,10 +208,7 @@ class _i2t(object):
                 abs_lib = os.path.join(real_module_dir_str, lib)
                 loaded_lib = ctypes.cdll.LoadLibrary(abs_lib)
                 self._deps.append(loaded_lib)
-            if PY2:
-                self._impl = importlib.import_module('pyi2t2')
-            else:
-                self._impl = importlib.import_module('pyi2t3')
+            self._impl = importlib.import_module('pyi2t3')
         self._path = self._impl.__file__
         if os.environ.get('MAZ_EXT_OCR_MODELS', '1') == '0':
             _logger.debug('OCR models (lazy) loaded')
