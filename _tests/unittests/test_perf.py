@@ -10,9 +10,9 @@ class Test_perf(unittest.TestCase):
     @unittest.skip("update dirs")
     def test_perf(self):
         """ test_perf """
-        from i2t import perf_probe, dir_spec
+        from i2t import perf_probe, dir_spec, BINS_DIR_NAME
 
-        bin_dir = os.path.join(_this_dir, '../../../bins')
+        bin_dir = os.path.join(_this_dir, '../../../../', BINS_DIR_NAME)
         config_dir = os.path.join(
             _this_dir, '../../../../bits/lang_dir/configs')
         lang_dir = os.path.join(_this_dir, '../../../../bits/lang_dir')
