@@ -90,7 +90,7 @@ def np_2_file(np_img):
 
 def np_to_png_base64(np_img):
     import cv2
-    img_str = cv2.imencode('.png', np_img)[1].tostring()
+    img_str = cv2.imencode('.png', np_img)[1].tobytes()
     return base64.standard_b64encode(img_str).decode("ascii")
 
 
