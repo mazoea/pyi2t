@@ -9,6 +9,7 @@
 #include "ocr/engines.h"
 #include "ocr/processing.h"
 #include "ocr/reocr.h"
+#include "ocr/osd.h"
 
 namespace py = pybind11;
 
@@ -92,7 +93,77 @@ namespace maz {
             },
             "OCR block image");
 
+        m.def(
+            "detect_rotation",
+            [](const maz::ia::image& img)
+            {
+                //using namespace maz::ocr;
+
+                double angle = 0.;
+                bool angle_set = false;
+                double deskew = 0.;
+                bool deskew_set = false;
+
+                maz::ia::image imgb = img;
+
+                if (!imgb.is_binary())
+                {
+                  imgb.binarize();
+				}
+
+                // 1. scale it to a4 size
+                float really_scaled = 0.f;
+                float scale_to_a4 = 0.f;
+                imgb.scale_to_A4_like(scale_to_a4, really_scaled);
+
+                // 2. deskew
+                float fconfidence = 0.f;
+                float skew = 0.f;
+                imgb.deskew(skew, fconfidence);
+                // rotate also the original image
+                if (0. != skew)
+                {
+                    deskew = skew;
+                }
+
+                // 3. detect rotation
+				ocr::osd rotator(imgb, true);
+                ocr::engine_manager eng_mng("tesseract", "tesserect4");
+				auto rot = rotator.detect(eng_mng);
+				if (rot.state == ocr::osd::ret_state::correct)
+				{
+                    angle = 0.;
+                    angle_set = true;
+				} else if (rot.state == ocr::osd::ret_state::up_side_down)
+				{
+					angle = 180.;
+					angle_set = true;
+				}
+                if (!angle_set)
+                {
+                    int guessed = imgb.detect_orientation();
+                    if (DONT_KNOW != guessed)
+                    {
+                        angle = static_cast<double>(guessed);
+                        angle_set = true;
+                    }
+                }
+                if (!angle_set)
+                {
+                    int guessed = imgb.detect_orientation();
+                    if (DONT_KNOW != guessed)
+                    {
+                        angle = static_cast<double>(guessed);
+                        angle_set = true;
+                    }
+                }
+
+                return std::make_tuple(angle, deskew);
+            },
+            "Return detected rotation and deskew");
+
     }
+
 
 } // namespace maz
 // clang-format on
