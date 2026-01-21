@@ -461,6 +461,9 @@ class _i2t(object):
         s = self._impl.json_subtypes_s(subtypes_arr)
         return json.loads(s)
 
+    def detect_rotation(self, img):
+        return self._impl.detect_rotation(img)
+
     # =============
 
     def _ocr_line(self, img, engine, binarize):
@@ -491,6 +494,6 @@ class _i2t(object):
         with perf_probe('ocr_line'):
             s, words_arr = self._impl.ocr_word(engine, img)
         return s, words_arr
-
+    
 
 m = _i2t()
