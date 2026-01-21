@@ -97,8 +97,6 @@ namespace maz {
             "detect_rotation",
             [](const maz::ia::image& img)
             {
-                //using namespace maz::ocr;
-
                 double angle = 0.;
                 bool angle_set = false;
                 double deskew = 0.;
@@ -128,7 +126,7 @@ namespace maz {
 
                 // 3. detect rotation
 				ocr::osd rotator(imgb, true);
-                ocr::engine_manager eng_mng("tesseract", "tesserect4");
+                ocr::engine_manager eng_mng(ocr::engine_manager::tess3, ocr::engine_manager::tess4);
 				auto rot = rotator.detect(eng_mng);
 				if (rot.state == ocr::osd::ret_state::correct)
 				{
