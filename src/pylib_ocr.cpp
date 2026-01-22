@@ -95,7 +95,7 @@ namespace maz {
 
         m.def(
             "detect_rotation",
-            [](const maz::ia::image& img, ocr::engine_manager eng_mng)
+            [](const maz::ia::image& img, ocr::engine_manager& eng_mng)
             {
                 double angle = 0.;
                 bool angle_set = false;
@@ -147,12 +147,12 @@ namespace maz {
                 }
                 if (!angle_set)
                 {
-                    int guessed = imgb.detect_orientation_bboxes();
-                    if (DONT_KNOW != guessed)
-                    {
+                   int guessed = imgb.detect_orientation_bboxes();
+                   if (DONT_KNOW != guessed)
+                   {
                         angle = static_cast<double>(guessed);
                         angle_set = true;
-                    }
+                   }
                 }
 
                 return std::make_tuple(angle, deskew);
