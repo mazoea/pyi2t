@@ -95,7 +95,7 @@ namespace maz {
 
         m.def(
             "detect_rotation",
-            [](const maz::ia::image& img)
+            [](const maz::ia::image& img, ocr::engine_manager eng_mng)
             {
                 double angle = 0.;
                 bool angle_set = false;
@@ -126,7 +126,6 @@ namespace maz {
 
                 // 3. detect rotation
 				ocr::osd rotator(imgb, true);
-                ocr::engine_manager eng_mng(ocr::engine_manager::tess3, ocr::engine_manager::tess4);
 				auto rot = rotator.detect(eng_mng);
 				if (rot.state == ocr::osd::ret_state::correct)
 				{
@@ -148,7 +147,7 @@ namespace maz {
                 }
                 if (!angle_set)
                 {
-                    int guessed = imgb.detect_orientation();
+                    int guessed = imgb.detect_orientation_bboxes();
                     if (DONT_KNOW != guessed)
                     {
                         angle = static_cast<double>(guessed);
