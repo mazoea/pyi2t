@@ -480,6 +480,8 @@ class _i2t(object):
         t3.init(self._dirs.lang, 'maz', env3)
         t4 = oem.reocr()
         t4.init(self._dirs.lang, 'maz-lstm', env4)
+        t3.adjust_for_page()
+        t4.adjust_for_page()
         return self._impl.detect_rotation(img, oem)
 
     # =============
