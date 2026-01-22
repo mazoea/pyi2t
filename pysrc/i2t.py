@@ -462,10 +462,8 @@ class _i2t(object):
         return json.loads(s)
 
     def detect_rotation(self, img):
-        print("Python: Creating engine manager")
         oem = self._impl.ocr_engine_manager('tesseract3', 'tesseract4')
-        print(f"Python: Engine manager created: {oem}")
-        
+
         conf = os.path.join(self._dirs.configs, 'maz.v5.json')
         with open(conf, mode='r') as fin:
             js = json.load(fin)
@@ -479,24 +477,15 @@ class _i2t(object):
         for k, v in ocr_js['reocr'].items():
             env4[k] = str(v)
 
-        print("Python: Getting engines from manager")
         t3 = oem.ocr()
-        print(f"Python: t3 engine: {t3}")
-        print("Python: Initializing t3")
         t3.init(self._dirs.lang, 'maz', env3)
-        print("Python: t3 initialized")
-        
+
         t4 = oem.reocr()
-        print(f"Python: t4 engine: {t4}")
-        print("Python: Initializing t4")
         t4.init(self._dirs.lang, 'maz-lstm', env4)
-        print("Python: t4 initialized")
-        
+
         t3.adjust_for_page()
         t4.adjust_for_page()
-        print("Python: Calling detect_rotation C++ function")
         result = self._impl.detect_rotation(img, oem)
-        print(f"Python: detect_rotation returned: {result}")
         return result
 
     # =============
