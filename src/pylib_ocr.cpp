@@ -95,18 +95,20 @@ namespace maz {
 
         m.def(
             "detect_rotation",
-            [](const maz::ia::image& img, ocr::engine_manager& eng_mng)
+            [](const maz::ia::image& img, ocr::engine_manager& eng_mng, std::string dbg_dir = {})
             {
                 double angle = 0.;
                 bool angle_set = false;
                 double deskew = 0.;
                 bool deskew_set = false;
+                std::string dbg;
 
                 maz::ia::image imgb = img;
 
                 if (!imgb.is_binary())
                 {
                   imgb.binarize();
+                  if (!dbg_dir.empty()) imgb.save(dbg_dir+"bin.png");
 				}
 
                 // 1. scale it to a4 size
@@ -126,8 +128,7 @@ namespace maz {
 
                 // 3. detect rotation
 				// Check if we can access the engine
-				const char* engine_name = eng_mng.ocr().name();
-				ocr::osd rotator(imgb, true);
+				ocr::osd rotator(imgb, true, dbg_dir);
 				auto rot = rotator.detect(eng_mng);
 				if (rot.state == ocr::osd::ret_state::correct)
 				{
@@ -138,6 +139,7 @@ namespace maz {
 					angle = 180.;
 					angle_set = true;
 				}
+                dbg = rot.to_str();
                 if (!angle_set)
                 {
                     int guessed = imgb.detect_orientation();
@@ -145,6 +147,7 @@ namespace maz {
                     {
                         angle = static_cast<double>(guessed);
                         angle_set = true;
+                        dbg += ";guessed_by_orientation";
                     }
                 }
                 if (!angle_set)
@@ -154,10 +157,31 @@ namespace maz {
                    {
                         angle = static_cast<double>(guessed);
                         angle_set = true;
+                        dbg += ";guessed_by_bbs";
                    }
                 }
+                if (!angle_set)
+                {
+						ocr::osc rot_checker(imgb, true, dbg);
+                        auto roc = rot_checker.detect(eng_mng);
+                        dbg +=roc.to_str();
+                        if (roc.state == ocr::osc::ret_state::ok)
+                        {
+                            int pos = 0;
+                            double max_conf = roc.confs[0];
+                            for (size_t i = 1; i < roc.confs.size(); ++i)
+                                                            {
+                                if (roc.confs[i] > max_conf)
+                                {
+                                    max_conf = roc.confs[i];
+                                    pos = i;
+                                }
+                            }
+                        }
 
-                return std::make_tuple(angle, deskew);
+                }
+
+                return std::make_tuple(angle, deskew, dbg);
             },
             "Return detected rotation and deskew");
 
