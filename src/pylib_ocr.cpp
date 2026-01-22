@@ -117,20 +117,22 @@ namespace maz {
                 // 2. deskew
                 float fconfidence = 0.f;
                 float skew = 0.f;
-                imgb.deskew(skew, fconfidence);
-                // rotate also the original image
-                if (0. != skew)
-                {
-                    deskew = skew;
-                }
+				imgb.deskew(skew, fconfidence);
+				// rotate also the original image
+				if (0. != skew)
+				{
+					deskew = skew;
+				}
 
                 // 3. detect rotation
+				// Check if we can access the engine
+				const char* engine_name = eng_mng.ocr().name();
 				ocr::osd rotator(imgb, true);
 				auto rot = rotator.detect(eng_mng);
 				if (rot.state == ocr::osd::ret_state::correct)
 				{
-                    angle = 0.;
-                    angle_set = true;
+					angle = 0.;
+					angle_set = true;
 				} else if (rot.state == ocr::osd::ret_state::up_side_down)
 				{
 					angle = 180.;
