@@ -482,15 +482,14 @@ class _i2t(object):
 
         t4 = oem.reocr()
         t4.init(self._dirs.lang, 'maz-lstm', env4)
-<<<<<<< Updated upstream
 
         t3.adjust_for_page()
         t4.adjust_for_page()
-        result = self._impl.detect_rotation(img, oem)
+        result = self._impl.detect_rotation(img, oem, "")
         return result
-=======
-        return self._impl.detect_rotation(img, oem, "")
->>>>>>> Stashed changes
+
+    def detect_deskew(self, img):
+        return self._impl.detect_deskew(img)
 
     # =============
 
