@@ -143,6 +143,7 @@ namespace maz {
                 if (!angle_set)
                 {
                     int guessed = imgb.detect_orientation();
+                   dbg += ";by_orient";
                     if (DONT_KNOW != guessed)
                     {
                         angle = static_cast<double>(guessed);
@@ -153,6 +154,7 @@ namespace maz {
                 if (!angle_set)
                 {
                    int guessed = imgb.detect_orientation_bboxes();
+                   dbg += ";by_bbs";
                    if (DONT_KNOW != guessed)
                    {
                         angle = static_cast<double>(guessed);
@@ -164,7 +166,7 @@ namespace maz {
                 {
 						ocr::osc rot_checker(imgb, true, dbg);
                         auto roc = rot_checker.detect(eng_mng);
-                        dbg +=roc.to_str();
+                        dbg +=";"+roc.to_str();
                         if (roc.state == ocr::osc::ret_state::ok)
                         {
                             int pos = 0;
@@ -184,6 +186,40 @@ namespace maz {
                 return std::make_tuple(angle, deskew, dbg);
             },
             "Return detected rotation and deskew");
+
+        m.def(
+            "detect_deskew",
+            [](const maz::ia::image& img)
+            {
+                double deskew = 0.;
+                bool deskew_set = false;
+                std::string dbg;
+
+                maz::ia::image imgb = img;
+
+                if (!imgb.is_binary())
+                {
+                  imgb.binarize();
+				}
+
+                // 1. scale it to a4 size
+                float really_scaled = 0.f;
+                float scale_to_a4 = 0.f;
+                imgb.scale_to_A4_like(scale_to_a4, really_scaled);
+
+                // 2. deskew
+                float fconfidence = 0.f;
+                float skew = 0.f;
+				imgb.deskew(skew, fconfidence);
+				// rotate also the original image
+				if (0. != skew)
+				{
+					deskew = skew;
+				}
+
+                return deskew;
+            },
+            "Return detected deskew");
 
     }
 
