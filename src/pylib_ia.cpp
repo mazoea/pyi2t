@@ -46,8 +46,6 @@ namespace maz {
             [](const maz::ia::image& img)
             {
                 double deskew = 0.;
-                bool deskew_set = false;
-                std::string dbg;
 
                 maz::ia::image imgb = img;
 
