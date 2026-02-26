@@ -40,6 +40,41 @@ namespace maz {
                 return make_tuple(li.hlines, li.vlines);
             },
             "IA extract hlines/vlines");
+
+        m.def(
+            "detect_deskew",
+            [](const maz::ia::image& img)
+            {
+                double deskew = 0.;
+                bool deskew_set = false;
+                std::string dbg;
+
+                maz::ia::image imgb = img;
+
+                if (!imgb.is_binary())
+                {
+                  imgb.binarize();
+				}
+
+                // 1. scale it to a4 size
+                float really_scaled = 0.f;
+                float scale_to_a4 = 0.f;
+                imgb.scale_to_A4_like(scale_to_a4, really_scaled);
+
+                // 2. deskew
+                float fconfidence = 0.f;
+                float skew = 0.f;
+				imgb.deskew(skew, fconfidence);
+				// rotate also the original image
+				if (0. != skew)
+				{
+					deskew = skew;
+				}
+
+                return deskew;
+            },
+            "Return detected deskew");
+
     }
 
 } // namespace maz
