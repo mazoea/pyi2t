@@ -9,7 +9,6 @@
 #include "ocr/engines.h"
 #include "ocr/processing.h"
 #include "ocr/reocr.h"
-#include "ocr/osd.h"
 
 namespace py = pybind11;
 
@@ -92,8 +91,8 @@ namespace maz {
                 return make_tuple(s, words);
             },
             "OCR block image");
-    }
 
+    }
 
 } // namespace maz
 // clang-format on
