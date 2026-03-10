@@ -494,6 +494,6 @@ class _i2t(object):
         with perf_probe('ocr_line'):
             s, words_arr = self._impl.ocr_word(engine, img)
         return s, words_arr
-    
+
 
 m = _i2t()
