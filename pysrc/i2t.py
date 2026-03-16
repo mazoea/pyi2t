@@ -461,6 +461,9 @@ class _i2t(object):
         s = self._impl.json_subtypes_s(subtypes_arr)
         return json.loads(s)
 
+    def detect_deskew(self, img):
+        return self._impl.detect_deskew(img)
+
     # =============
 
     def _ocr_line(self, img, engine, binarize):
