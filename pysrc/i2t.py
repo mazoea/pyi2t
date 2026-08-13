@@ -369,6 +369,17 @@ class _i2t(object):
     def ub_parser(self, i2t_doc, i2t_ib_bbox):
         return self._impl.ub_parser(i2t_doc, i2t_ib_bbox)
 
+    def flowed_grid_parser(self, i2t_doc, i2t_ib_bbox):
+        # ADVENT#gIssue-1133 / #jira-196a/b
+        return self._impl.flowed_grid_parser(i2t_doc, i2t_ib_bbox)
+
+    def flowed_grid_classify(self, page):
+        # ADVENT#gIssue-1133 / #jira-196a/b: absent on older i2t builds -> not a flowed-grid page,
+        # so IB falls back to the column parser instead of failing the whole page.
+        if not hasattr(self._impl, "flowed_grid_classify"):
+            return False
+        return self._impl.flowed_grid_classify(page)
+
     # =============
 
     def load_doc(self, js_str):
