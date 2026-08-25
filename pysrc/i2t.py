@@ -15,7 +15,7 @@ import base64
 # =================
 _logger = logging.getLogger("i2t")
 _this_dir = os.path.dirname(os.path.abspath(__file__))
-
+BINS_DIR_NAME = 'bins-312'
 
 class perf_probe:
     """
@@ -72,7 +72,7 @@ def perf_method(min_t=0.2):
 class dir_spec(object):
     def __init__(self, base_dir=None, bin_dir=None, config_dir=None, lang_dir=None):
         base_dir = base_dir or _this_dir
-        self.bins = bin_dir or os.path.join(base_dir, 'bins')
+        self.bins = bin_dir or os.path.join(base_dir, BINS_DIR_NAME)
         self.configs = config_dir or os.path.join(base_dir, 'configs')
         # mind the slash
         self.lang = lang_dir or os.path.join(base_dir, 'lang_dir/')
@@ -90,7 +90,7 @@ def np_2_file(np_img):
 
 def np_to_png_base64(np_img):
     import cv2
-    img_str = cv2.imencode('.png', np_img)[1].tostring()
+    img_str = cv2.imencode('.png', np_img)[1].tobytes()
     return base64.standard_b64encode(img_str).decode("ascii")
 
 
@@ -180,7 +180,7 @@ class _i2t(object):
         self._path = None
         self._deps = []
         self._dirs = None
-        if os.path.exists(os.path.join(_this_dir, 'bins')):
+        if os.path.exists(os.path.join(_this_dir, BINS_DIR_NAME)):
             dirs = dir_spec(_this_dir)
             self.init(dirs)
         self.t3 = None
@@ -369,6 +369,17 @@ class _i2t(object):
     def ub_parser(self, i2t_doc, i2t_ib_bbox):
         return self._impl.ub_parser(i2t_doc, i2t_ib_bbox)
 
+    def flowed_grid_parser(self, i2t_doc, i2t_ib_bbox):
+        # ADVENT#gIssue-1133 / #jira-196a/b
+        return self._impl.flowed_grid_parser(i2t_doc, i2t_ib_bbox)
+
+    def flowed_grid_classify(self, page):
+        # ADVENT#gIssue-1133 / #jira-196a/b: absent on older i2t builds -> not a flowed-grid page,
+        # so IB falls back to the column parser instead of failing the whole page.
+        if not hasattr(self._impl, "flowed_grid_classify"):
+            return False
+        return self._impl.flowed_grid_classify(page)
+
     # =============
 
     def load_doc(self, js_str):
@@ -460,6 +471,9 @@ class _i2t(object):
     def subtypes_dict(self, subtypes_arr):
         s = self._impl.json_subtypes_s(subtypes_arr)
         return json.loads(s)
+
+    def detect_deskew(self, img):
+        return self._impl.detect_deskew(img)
 
     # =============
 

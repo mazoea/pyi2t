@@ -8,6 +8,8 @@
 
 #include "arguments.h"
 #include "forms/ib/columns_text.h"
+#include "forms/ib/flowed_grid.h"
+#include "forms/ib/flowed_grid_parser.h"
 #include "forms/ib/page_segments_detector.h"
 #include "forms/ib/report.h"
 #include "forms/ib/rough.h"
@@ -250,6 +252,21 @@ namespace maz {
             )
         ;
         
+        // ADVENT#gIssue-1133 / #jira-196a/b: flowed fixed-grid IB parser, routed like `ub_parser`.
+        py::class_<maz::forms::ib::flowed_grid_parser>(m, "flowed_grid_parser")
+            .def(py::init<maz::doc::document&, const bbox_type&>())
+            .def("report", &maz::forms::ib::flowed_grid_parser::report)
+            .def("parse",
+                &maz::forms::ib::flowed_grid_parser::parse,
+                "Parse flowed fixed-grid IB lines",
+                py::return_value_policy::copy
+            )
+        ;
+
+        // ADVENT#gIssue-1133 / #jira-196a/b: read-only flowed fixed-grid IB page test.
+        m.def("flowed_grid_classify", &maz::forms::ib::flowed_grid::classify,
+            "True if the page is a flowed fixed-grid IB page.");
+
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");
         preport.def("find_columns", &maz::forms::ib::report::find_columns)
             .def("handle_corner_case", &maz::forms::ib::report::handle_corner_case)
