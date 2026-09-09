@@ -253,8 +253,35 @@ namespace maz {
         ;
         
         // ADVENT#gIssue-1133 / #jira-196a/b: flowed fixed-grid IB parser, routed like `ub_parser`.
+        //
+        // ADVENT#jira-196: `template_path` is what gives the parser its revCodes
+        // vocabulary, exactly as `create_report` takes one for the classic path. These
+        // pages state the revenue code once, as a heading over the rows it owns, and
+        // section reading is vocabulary-gated -- so a parser built without a template
+        // fills no revCode at all. Optional, and empty by default, so a caller that
+        // predates this keeps working and simply reads no sections.
         py::class_<maz::forms::ib::flowed_grid_parser>(m, "flowed_grid_parser")
-            .def(py::init<maz::doc::document&, const bbox_type&>())
+            .def(py::init(
+                    [](maz::doc::document& doc,
+                        const bbox_type& ib_bbox,
+                        const std::string& template_path)
+                    {
+                        maz::forms::ib::ptr_ib_elements pelems;
+                        maz::forms::ib::ptr_revCode_vocab prc;
+                        maz::forms::ib::ptr_template ptpl =
+                            maz::forms::ib::flowed_grid_template(template_path, doc);
+                        if (ptpl)
+                        {
+                            pelems = ptpl->i_ib_elements();
+                            prc = ptpl->revcodes();
+                        }
+                        return std::unique_ptr<maz::forms::ib::flowed_grid_parser>(
+                            new maz::forms::ib::flowed_grid_parser(
+                                doc, ib_bbox, "", pelems, prc));
+                    }),
+                py::arg("doc"),
+                py::arg("ib_bbox"),
+                py::arg("template_path") = std::string())
             .def("report", &maz::forms::ib::flowed_grid_parser::report)
             .def("parse",
                 &maz::forms::ib::flowed_grid_parser::parse,
