@@ -252,14 +252,7 @@ namespace maz {
             )
         ;
         
-        // ADVENT#gIssue-1133 / #jira-196a/b: flowed fixed-grid IB parser, routed like `ub_parser`.
-        //
-        // ADVENT#jira-196: `template_path` is what gives the parser its revCodes
-        // vocabulary, exactly as `create_report` takes one for the classic path. These
-        // pages state the revenue code once, as a heading over the rows it owns, and
-        // section reading is vocabulary-gated -- so a parser built without a template
-        // fills no revCode at all. Optional, and empty by default, so a caller that
-        // predates this keeps working and simply reads no sections.
+        // advent#gIssue-1133, advent#jira-196a/b: flowed grid IB parser, routed like `ub_parser`.
         py::class_<maz::forms::ib::flowed_grid_parser>(m, "flowed_grid_parser")
             .def(py::init(
                     [](maz::doc::document& doc,
@@ -285,14 +278,14 @@ namespace maz {
             .def("report", &maz::forms::ib::flowed_grid_parser::report)
             .def("parse",
                 &maz::forms::ib::flowed_grid_parser::parse,
-                "Parse flowed fixed-grid IB lines",
+                "Parse flowed grid IB lines",
                 py::return_value_policy::copy
             )
         ;
 
-        // ADVENT#gIssue-1133 / #jira-196a/b: read-only flowed fixed-grid IB page test.
+        // advent#gIssue-1133, advent#jira-196a/b: read-only flowed grid IB page test.
         m.def("flowed_grid_classify", &maz::forms::ib::flowed_grid::classify,
-            "True if the page is a flowed fixed-grid IB page.");
+            "True if the page is a flowed grid IB page.");
 
         py::class_<maz::forms::ib::report, std::shared_ptr<maz::forms::ib::report>> preport (m, "ib_report");
         preport.def("find_columns", &maz::forms::ib::report::find_columns)
