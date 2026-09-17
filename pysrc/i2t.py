@@ -371,7 +371,17 @@ class _i2t(object):
 
     def flowed_grid_parser(self, i2t_doc, i2t_ib_bbox):
         # ADVENT#gIssue-1133 / #jira-196a/b
-        return self._impl.flowed_grid_parser(i2t_doc, i2t_ib_bbox)
+        # ADVENT#jira-196: the template is what carries the revCodes vocabulary, the same
+        # one `create_report` passes for the classic path. These pages state the revenue
+        # code once, as a heading over the rows it owns, and section reading is
+        # vocabulary-gated -- without the template every item comes back with no revCode.
+        tmpl_path = os.path.join(self._dirs.configs, 'ib-template.json')
+        try:
+            return self._impl.flowed_grid_parser(i2t_doc, i2t_ib_bbox, tmpl_path)
+        except TypeError:
+            # older i2t build without the template argument -> parse without revCodes
+            # rather than failing the page
+            return self._impl.flowed_grid_parser(i2t_doc, i2t_ib_bbox)
 
     def flowed_grid_classify(self, page):
         # ADVENT#gIssue-1133 / #jira-196a/b: absent on older i2t builds -> not a flowed-grid page,
