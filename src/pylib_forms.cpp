@@ -354,7 +354,9 @@ namespace maz {
                 const maz::ia::image& imgb,
                 const std::string& dbg) -> std::shared_ptr<maz::forms::ib::report> 
             {
-                    auto ptpl = maz::forms::ib::form_template::create(template_path, doc);
+                    // Advent#gIssue-1183 - the IB line format of the grid's segment
+                    maz::doc::bbox_type segment = pgrid ? pgrid->segment() : maz::doc::bbox_type();
+                    auto ptpl = maz::forms::ib::form_template::create(template_path, doc, segment);
 
                     // we need shared_ptr, internally pixClone ensures we will not
                     // double free the memory
